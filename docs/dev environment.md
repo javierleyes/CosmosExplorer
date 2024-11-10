@@ -1,8 +1,8 @@
 # Development environment
 
 ## Requirements
-NET 8
-Azure Cosmos DB emulator
+* NET 8
+* Azure Cosmos DB emulator
 
 ### How to install Azure NoSQL
 https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator?tabs=docker-windows%2Ccsharp&pivots=api-nosql
