@@ -20,3 +20,8 @@ Note: It's very important to use BASH.
 mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
 
 3. Go to https://localhost:8081/_explorer/index.html
+
+## How to run the application (Docker support)
+
+1. Open a terminal
+2. docker run -it cosmosexplorerterminal (Interactive mode)
