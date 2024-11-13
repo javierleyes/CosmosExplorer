@@ -17,7 +17,7 @@ class Program
             Console.WriteLine("1) See all databases");
             Console.WriteLine("2) See all containers by a database");
             Console.WriteLine("3) Run a query by a database and a container");
-            Console.WriteLine("4) Create an item by a database, container and the item");
+            Console.WriteLine("4) Create or replace an item by a database, container and the item");
             Console.WriteLine("5) Exit");
             string option = Console.ReadLine();
 
@@ -95,11 +95,6 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Creates an item in the specified container within the specified database.
-    /// </summary>
-    /// <param name="cosmosExplorerHelper">The helper instance to interact with Cosmos DB.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task CreateItemByDatabaseAndContainer(CosmosExplorerCore cosmosExplorerHelper)
     {
         Console.Write("Enter database name: ");
@@ -116,7 +111,7 @@ class Program
 
         dynamic item = Newtonsoft.Json.JsonConvert.DeserializeObject(itemJson);
 
-        dynamic createdItem = await cosmosExplorerHelper.CreateItemAsync(databaseName, containerName, item, partitionKey);
+        dynamic createdItem = await cosmosExplorerHelper.UpsertItemAsync(databaseName, containerName, item, partitionKey);
 
         Console.WriteLine($"Created item: {createdItem}");
     }
