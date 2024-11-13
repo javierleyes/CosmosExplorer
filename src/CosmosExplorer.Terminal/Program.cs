@@ -9,7 +9,7 @@ class Program
     static async Task Main()
     {
         // Create an instance of the CosmosExplorerHelper class.
-        CosmosExplorerHelper cosmosExplorerHelper = new CosmosExplorerHelper(CONNECTION_STRING);
+        CosmosExplorerCore cosmosExplorerHelper = new CosmosExplorerCore(CONNECTION_STRING);
 
         while (true)
         {
@@ -17,7 +17,8 @@ class Program
             Console.WriteLine("1) See all databases");
             Console.WriteLine("2) See all containers by a database");
             Console.WriteLine("3) Run a query by a database and a container");
-            Console.WriteLine("4) Exit");
+            Console.WriteLine("4) Create an item by a database, container and the item");
+            Console.WriteLine("5) Exit");
             string option = Console.ReadLine();
 
             switch (option)
@@ -32,6 +33,9 @@ class Program
                     await RunQueryByDatabaseAndContainer(cosmosExplorerHelper);
                     break;
                 case "4":
+                    await CreateItemByDatabaseAndContainer(cosmosExplorerHelper);
+                    break;
+                case "5":
                     return;
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
@@ -40,7 +44,7 @@ class Program
         }
     }
 
-    private static async Task SeeAllDatabases(CosmosExplorerHelper cosmosExplorerHelper)
+    private static async Task SeeAllDatabases(CosmosExplorerCore cosmosExplorerHelper)
     {
         FeedIterator<DatabaseProperties> iterator = cosmosExplorerHelper.GetDatabaseIterator();
         while (iterator.HasMoreResults)
@@ -53,7 +57,7 @@ class Program
         }
     }
 
-    private static async Task SeeAllContainersByDatabase(CosmosExplorerHelper cosmosExplorerHelper)
+    private static async Task SeeAllContainersByDatabase(CosmosExplorerCore cosmosExplorerHelper)
     {
         Console.Write("Enter database name: ");
         string databaseName = Console.ReadLine();
@@ -69,12 +73,14 @@ class Program
         }
     }
 
-    private static async Task RunQueryByDatabaseAndContainer(CosmosExplorerHelper cosmosExplorerHelper)
+    private static async Task RunQueryByDatabaseAndContainer(CosmosExplorerCore cosmosExplorerHelper)
     {
         Console.Write("Enter database name: ");
         string databaseName = Console.ReadLine();
+
         Console.Write("Enter container name: ");
         string containerName = Console.ReadLine();
+
         Console.Write("Enter query: ");
         string query = Console.ReadLine();
 
@@ -87,5 +93,31 @@ class Program
                 Console.WriteLine(item);
             }
         }
+    }
+
+    /// <summary>
+    /// Creates an item in the specified container within the specified database.
+    /// </summary>
+    /// <param name="cosmosExplorerHelper">The helper instance to interact with Cosmos DB.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    private static async Task CreateItemByDatabaseAndContainer(CosmosExplorerCore cosmosExplorerHelper)
+    {
+        Console.Write("Enter database name: ");
+        string databaseName = Console.ReadLine();
+
+        Console.Write("Enter container name: ");
+        string containerName = Console.ReadLine();
+
+        Console.Write("Enter item (in JSON format): ");
+        string itemJson = Console.ReadLine();
+
+        Console.Write("Enter partition key: ");
+        string partitionKey = Console.ReadLine();
+
+        dynamic item = Newtonsoft.Json.JsonConvert.DeserializeObject(itemJson);
+
+        dynamic createdItem = await cosmosExplorerHelper.CreateItemAsync(databaseName, containerName, item, partitionKey);
+
+        Console.WriteLine($"Created item: {createdItem}");
     }
 }
