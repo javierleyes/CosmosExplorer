@@ -2,11 +2,11 @@
 
 namespace CosmosExplorer.Core
 {
-    public class CosmosExplorerHelper
+    public class CosmosExplorerCore
     {
         private readonly CosmosClient _cosmosClient;
 
-        public CosmosExplorerHelper(string connectionString)
+        public CosmosExplorerCore(string connectionString)
         {
             _cosmosClient = CreateCosmosClient(connectionString);
         }
@@ -63,6 +63,20 @@ namespace CosmosExplorer.Core
         {
             Container containerQuery = _cosmosClient.GetContainer(databaseName, containerName);
             return containerQuery.GetItemQueryIterator<dynamic>(new QueryDefinition(query));
+        }
+
+        /// <summary>
+        /// Creates an item in the specified container within the specified database.
+        /// </summary>
+        /// <param name="databaseName">The name of the database containing the container.</param>
+        /// <param name="containerName">The name of the container to create the item in.</param>
+        /// <param name="item">The item to create in the container.</param>
+        /// <param name="partitionKey">The partition key for the item.</param>
+        /// <returns>A task representing the asynchronous operation, with a dynamic result containing the created item.</returns>
+        public async Task<dynamic> CreateItemAsync(string databaseName, string containerName, dynamic item, string partitionKey)
+        {
+            Container container = _cosmosClient.GetContainer(databaseName, containerName);
+            return await container.CreateItemAsync(item, new PartitionKey(partitionKey)).ConfigureAwait(false);
         }
     }
 }
