@@ -18,7 +18,8 @@ class Program
             Console.WriteLine("2) See all containers by a database");
             Console.WriteLine("3) Run a query by a database and a container");
             Console.WriteLine("4) Create or replace an item by a database, container and the item");
-            Console.WriteLine("5) Exit");
+            Console.WriteLine("5) Delete an item by database, container, id and partitionKey");
+            Console.WriteLine("6) Exit");
             string option = Console.ReadLine();
 
             switch (option)
@@ -36,6 +37,9 @@ class Program
                     await CreateItemByDatabaseAndContainer(cosmosExplorerHelper);
                     break;
                 case "5":
+                    await DeleteItemByDatabaseAndContainer(cosmosExplorerHelper);
+                    break;
+                case "6":
                     return;
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
@@ -114,5 +118,24 @@ class Program
         dynamic createdItem = await cosmosExplorerHelper.UpsertItemAsync(databaseName, containerName, item, partitionKey);
 
         Console.WriteLine($"Created item: {createdItem}");
+    }
+
+    private static async Task DeleteItemByDatabaseAndContainer(CosmosExplorerCore cosmosExplorerHelper)
+    {
+        Console.Write("Enter database name: ");
+        string databaseName = Console.ReadLine();
+
+        Console.Write("Enter container name: ");
+        string containerName = Console.ReadLine();
+
+        Console.Write("Enter item id: ");
+        string id = Console.ReadLine();
+
+        Console.Write("Enter partition key: ");
+        string partitionKey = Console.ReadLine();
+
+        dynamic deletedItem = await cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey);
+
+        Console.WriteLine($"Deleted item: {deletedItem}");
     }
 }
