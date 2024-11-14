@@ -1,3 +1,4 @@
 # Next features:
 
-* Delete document
+* Create container
+* Delete container

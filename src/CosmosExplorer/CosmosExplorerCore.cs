@@ -79,5 +79,19 @@ namespace CosmosExplorer.Core
             Container container = _cosmosClient.GetContainer(databaseName, containerName);
             return await container.UpsertItemAsync(item, new PartitionKey(partitionKey)).ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Deletes an item from the specified container within the specified database.
+        /// </summary>
+        /// <param name="databaseName">The name of the database containing the container.</param>
+        /// <param name="containerName">The name of the container to delete the item from.</param>
+        /// <param name="id">The ID of the item to delete.</param>
+        /// <param name="partitionKey">The partition key for the item.</param>
+        /// <returns>A task representing the asynchronous operation, with a dynamic result containing the deleted item.</returns>
+        public async Task<dynamic> DeleteItemAsync(string databaseName, string containerName, string id, string partitionKey)
+        {
+            Container container = _cosmosClient.GetContainer(databaseName, containerName);
+            return await container.DeleteItemAsync<dynamic>(id, new PartitionKey(partitionKey)).ConfigureAwait(false);
+        }
     }
 }
