@@ -28,19 +28,19 @@ class Program
             switch (option)
             {
                 case "1":
-                    await SeeAllDatabases(cosmosExplorerHelper);
+                    await SeeAllDatabases(cosmosExplorerHelper).ConfigureAwait(true);
                     break;
                 case "2":
-                    await SeeAllContainersByDatabase(cosmosExplorerHelper);
+                    await SeeAllContainersByDatabase(cosmosExplorerHelper).ConfigureAwait(true);
                     break;
                 case "3":
-                    await RunQueryByDatabaseAndContainer(cosmosExplorerHelper);
+                    await RunQueryByDatabaseAndContainer(cosmosExplorerHelper).ConfigureAwait(true);
                     break;
                 case "4":
-                    await CreateItemByDatabaseAndContainer(cosmosExplorerHelper);
+                    await CreateItemByDatabaseAndContainer(cosmosExplorerHelper).ConfigureAwait(true);
                     break;
                 case "5":
-                    await DeleteItemByDatabaseAndContainer(cosmosExplorerHelper);
+                    await DeleteItemByDatabaseAndContainer(cosmosExplorerHelper).ConfigureAwait(true);
                     break;
                 case "6":
                     return;
@@ -56,7 +56,7 @@ class Program
         FeedIterator<DatabaseProperties> iterator = cosmosExplorerHelper.GetDatabaseIterator();
         while (iterator.HasMoreResults)
         {
-            FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync();
+            FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync().ConfigureAwait(false);
             foreach (var database in databases)
             {
                 Console.WriteLine(database.Id);
@@ -72,7 +72,7 @@ class Program
         FeedIterator<ContainerProperties> containerIterator = cosmosExplorerHelper.GetContainerIterator(databaseName);
         while (containerIterator.HasMoreResults)
         {
-            FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync();
+            FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(false);
             foreach (var container in containerResponse)
             {
                 Console.WriteLine($"  Container: {container.Id}");
@@ -94,7 +94,7 @@ class Program
         FeedIterator<dynamic> queryIterator = cosmosExplorerHelper.GetQueryIterator(databaseName, containerName, query);
         while (queryIterator.HasMoreResults)
         {
-            FeedResponse<dynamic> queryResponse = await queryIterator.ReadNextAsync();
+            FeedResponse<dynamic> queryResponse = await queryIterator.ReadNextAsync().ConfigureAwait(false);
             foreach (var item in queryResponse)
             {
                 Console.WriteLine(item);
@@ -137,7 +137,7 @@ class Program
         Console.Write("Enter partition key: ");
         string partitionKey = Console.ReadLine();
 
-        dynamic deletedItem = await cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey);
+        dynamic deletedItem = await cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey).ConfigureAwait(false);
 
         Console.WriteLine($"Deleted item: {deletedItem}");
     }
