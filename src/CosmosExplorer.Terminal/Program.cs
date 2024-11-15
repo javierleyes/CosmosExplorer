@@ -1,17 +1,27 @@
-﻿using CosmosExplorer.Core;
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using CosmosExplorer.Core;
 using Microsoft.Azure.Cosmos;
 
-class Program
+internal class Program
 {
-    //private const string CONNECTION_STRING = "AccountEndpoint=https://host.docker.internal:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-    //private const string CONNECTION_STRING = "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+    // private const string CONNECTION_STRING = "AccountEndpoint=https://host.docker.internal:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+    // private const string CONNECTION_STRING = "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
-    static async Task Main()
+    private static async Task Main()
     {
         Console.Write("Enter the connection string: ");
         string connectionString = Console.ReadLine();
 
         // Create an instance of the CosmosExplorerHelper class.
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            Console.WriteLine("Connection string cannot be null or empty.");
+            return;
+        }
+
         CosmosExplorerCore cosmosExplorerHelper = new CosmosExplorerCore(connectionString);
 
         while (true)
@@ -56,7 +66,7 @@ class Program
         FeedIterator<DatabaseProperties> iterator = cosmosExplorerHelper.GetDatabaseIterator();
         while (iterator.HasMoreResults)
         {
-            FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync().ConfigureAwait(false);
+            FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync().ConfigureAwait(true);
             foreach (var database in databases)
             {
                 Console.WriteLine(database.Id);
@@ -72,7 +82,7 @@ class Program
         FeedIterator<ContainerProperties> containerIterator = cosmosExplorerHelper.GetContainerIterator(databaseName);
         while (containerIterator.HasMoreResults)
         {
-            FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(false);
+            FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
             foreach (var container in containerResponse)
             {
                 Console.WriteLine($"  Container: {container.Id}");
@@ -94,7 +104,7 @@ class Program
         FeedIterator<dynamic> queryIterator = cosmosExplorerHelper.GetQueryIterator(databaseName, containerName, query);
         while (queryIterator.HasMoreResults)
         {
-            FeedResponse<dynamic> queryResponse = await queryIterator.ReadNextAsync().ConfigureAwait(false);
+            FeedResponse<dynamic> queryResponse = await queryIterator.ReadNextAsync().ConfigureAwait(true);
             foreach (var item in queryResponse)
             {
                 Console.WriteLine(item);
@@ -137,7 +147,7 @@ class Program
         Console.Write("Enter partition key: ");
         string partitionKey = Console.ReadLine();
 
-        dynamic deletedItem = await cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey).ConfigureAwait(false);
+        dynamic deletedItem = await cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey).ConfigureAwait(true);
 
         Console.WriteLine($"Deleted item: {deletedItem}");
     }

@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosExplorer.UI", "CosmosExplorer.UI\CosmosExplorer.UI.csproj", "{C226F133-F94B-4B95-A903-A7AA238A6988}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +28,15 @@ Global
 		{37595716-EE6A-4CCD-A639-BB0038B5D2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37595716-EE6A-4CCD-A639-BB0038B5D2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37595716-EE6A-4CCD-A639-BB0038B5D2DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C226F133-F94B-4B95-A903-A7AA238A6988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C226F133-F94B-4B95-A903-A7AA238A6988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C226F133-F94B-4B95-A903-A7AA238A6988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C226F133-F94B-4B95-A903-A7AA238A6988}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0966DEA4-894D-4E3A-8AC2-B1E12BF7D7EA}
 	EndGlobalSection
 EndGlobal

@@ -1,14 +1,25 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿// <copyright file="CosmosExplorerCore.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace CosmosExplorer.Core
 {
+    using Microsoft.Azure.Cosmos;
+
+    /// <summary>
+    /// Cosmos Explorer Core class to interact with Cosmos DB.
+    /// </summary>
     public class CosmosExplorerCore
     {
-        private readonly CosmosClient _cosmosClient;
+        private readonly CosmosClient cosmosClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CosmosExplorerCore"/> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
         public CosmosExplorerCore(string connectionString)
         {
-            _cosmosClient = CreateCosmosClient(connectionString);
+            this.cosmosClient = this.CreateCosmosClient(connectionString);
         }
 
         /// <summary>
@@ -20,11 +31,11 @@ namespace CosmosExplorer.Core
         public CosmosClient CreateCosmosClient(string connectionString)
         {
             // This is a workaround to accept self-signed certificates in development.
-            CosmosClientOptions options = new()
+            CosmosClientOptions options = new CosmosClientOptions()
             {
                 HttpClientFactory = () => new HttpClient(new HttpClientHandler()
                 {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
                 }),
                 ConnectionMode = ConnectionMode.Gateway,
             };
@@ -38,7 +49,7 @@ namespace CosmosExplorer.Core
         /// <returns>A <see cref="FeedIterator{DatabaseProperties}"/> to iterate through the databases.</returns>
         public FeedIterator<DatabaseProperties> GetDatabaseIterator()
         {
-            return _cosmosClient.GetDatabaseQueryIterator<DatabaseProperties>();
+            return this.cosmosClient.GetDatabaseQueryIterator<DatabaseProperties>();
         }
 
         /// <summary>
@@ -48,7 +59,7 @@ namespace CosmosExplorer.Core
         /// <returns>A <see cref="FeedIterator{ContainerProperties}"/> to iterate through the containers.</returns>
         public FeedIterator<ContainerProperties> GetContainerIterator(string databaseName)
         {
-            Database database = _cosmosClient.GetDatabase(databaseName);
+            Database database = this.cosmosClient.GetDatabase(databaseName);
             return database.GetContainerQueryIterator<ContainerProperties>();
         }
 
@@ -61,7 +72,7 @@ namespace CosmosExplorer.Core
         /// <returns>A <see cref="FeedIterator{T}"/> to iterate through the query results.</returns>
         public FeedIterator<dynamic> GetQueryIterator(string databaseName, string containerName, string query)
         {
-            Container containerQuery = _cosmosClient.GetContainer(databaseName, containerName);
+            Container containerQuery = this.cosmosClient.GetContainer(databaseName, containerName);
             return containerQuery.GetItemQueryIterator<dynamic>(new QueryDefinition(query));
         }
 
@@ -76,7 +87,7 @@ namespace CosmosExplorer.Core
         /// <returns>A task representing the asynchronous operation, with a dynamic result containing the upserted item.</returns>
         public async Task<dynamic> UpsertItemAsync(string databaseName, string containerName, dynamic item, string partitionKey)
         {
-            Container container = _cosmosClient.GetContainer(databaseName, containerName);
+            Container container = this.cosmosClient.GetContainer(databaseName, containerName);
             return await container.UpsertItemAsync(item, new PartitionKey(partitionKey)).ConfigureAwait(false);
         }
 
@@ -90,7 +101,7 @@ namespace CosmosExplorer.Core
         /// <returns>A task representing the asynchronous operation, with a dynamic result containing the deleted item.</returns>
         public async Task<dynamic> DeleteItemAsync(string databaseName, string containerName, string id, string partitionKey)
         {
-            Container container = _cosmosClient.GetContainer(databaseName, containerName);
+            Container container = this.cosmosClient.GetContainer(databaseName, containerName);
             return await container.DeleteItemAsync<dynamic>(id, new PartitionKey(partitionKey)).ConfigureAwait(false);
         }
     }
