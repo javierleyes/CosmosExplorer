@@ -2,3 +2,4 @@
 
 * Create container
 * Delete container
+* Delete database
