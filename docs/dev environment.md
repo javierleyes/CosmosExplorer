@@ -2,8 +2,9 @@
 
 ## Requirements
 * NET 8
-* Azure Cosmos DB emulator
 * Visual Studio 2022 or Visual Studio Code
+* Azure Cosmos DB emulator - Windows
+* Docker (Azure Cosmos DB emulator) - Linux
 
 ### How to install Azure NoSQL
 https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator?tabs=docker-windows%2Ccsharp&pivots=api-nosql
