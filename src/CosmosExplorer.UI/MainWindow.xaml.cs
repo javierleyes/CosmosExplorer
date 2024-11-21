@@ -58,35 +58,232 @@ namespace CosmosExplorer.UI
 
         private async Task SeeAllDatabases()
         {
-            FeedIterator<DatabaseProperties> iterator = _cosmosExplorerHelper.GetDatabaseIterator();
-            while (iterator.HasMoreResults)
+            OutputTextBox.Text = string.Empty;
+
+            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+
+            foreach (string databaseName in databaseNames)
             {
-                FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync().ConfigureAwait(true);
-                foreach (var database in databases)
-                {
-                    OutputTextBox.Text += database.Id + Environment.NewLine;
-                }
+                OutputTextBox.Text += databaseName + Environment.NewLine;
             }
         }
 
         private async Task SeeAllContainersByDatabase()
         {
-            // Implement similar to SeeAllDatabases
+            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+
+            var selectDatabaseWindow = new Window
+            {
+                Title = "Select Database",
+                Width = 300,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            var stackPanel = new StackPanel();
+            var comboBox = new ComboBox { Margin = new Thickness(10) };
+            foreach (var dbName in databaseNames)
+            {
+                comboBox.Items.Add(new ComboBoxItem { Content = dbName });
+            }
+            comboBox.SelectedIndex = 0;
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 75,
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            okButton.Click += (s, e) => selectDatabaseWindow.DialogResult = true;
+
+            stackPanel.Children.Add(comboBox);
+            stackPanel.Children.Add(okButton);
+            selectDatabaseWindow.Content = stackPanel;
+
+            if (selectDatabaseWindow.ShowDialog() == true)
+            {
+                string databaseName = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
+                if (string.IsNullOrEmpty(databaseName))
+                {
+                    OutputTextBox.Text = "Database name cannot be empty.";
+                    return;
+                }
+
+                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                OutputTextBox.Text = string.Empty;
+                while (containerIterator.HasMoreResults)
+                {
+                    FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
+                    foreach (var container in containerResponse)
+                    {
+                        OutputTextBox.Text += $"  Container: {container.Id}" + Environment.NewLine;
+                    }
+                }
+            }
         }
 
         private async Task RunQueryByDatabaseAndContainer()
         {
-            // Implement similar to SeeAllDatabases
+            OutputTextBox.Text = string.Empty;
+
+            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+
+            var selectDatabaseWindow = new Window
+            {
+                Title = "Select Database",
+                Width = 300,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            var stackPanel = new StackPanel();
+            var comboBox = new ComboBox { Margin = new Thickness(10) };
+            foreach (var dbName in databaseNames)
+            {
+                comboBox.Items.Add(new ComboBoxItem { Content = dbName });
+            }
+            comboBox.SelectedIndex = 0;
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 75,
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            okButton.Click += (s, e) => selectDatabaseWindow.DialogResult = true;
+
+            stackPanel.Children.Add(comboBox);
+            stackPanel.Children.Add(okButton);
+            selectDatabaseWindow.Content = stackPanel;
+
+            if (selectDatabaseWindow.ShowDialog() == true)
+            {
+                string databaseName = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
+                if (string.IsNullOrEmpty(databaseName))
+                {
+                    OutputTextBox.Text = "Database name cannot be empty.";
+                    return;
+                }
+
+                var selectContainerWindow = new Window
+                {
+                    Title = "Select Container",
+                    Width = 300,
+                    Height = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+
+                var containerStackPanel = new StackPanel();
+                var containerComboBox = new ComboBox { Margin = new Thickness(10) };
+
+                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                while (containerIterator.HasMoreResults)
+                {
+                    FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
+                    foreach (var container in containerResponse)
+                    {
+                        containerComboBox.Items.Add(new ComboBoxItem { Content = container.Id });
+                    }
+                }
+                containerComboBox.SelectedIndex = 0;
+
+                var containerOkButton = new Button
+                {
+                    Content = "OK",
+                    Width = 75,
+                    Margin = new Thickness(10),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
+                containerOkButton.Click += (s, e) => selectContainerWindow.DialogResult = true;
+
+                containerStackPanel.Children.Add(containerComboBox);
+                containerStackPanel.Children.Add(containerOkButton);
+                selectContainerWindow.Content = containerStackPanel;
+
+                if (selectContainerWindow.ShowDialog() == true)
+                {
+                    string containerName = ((ComboBoxItem)containerComboBox.SelectedItem).Content.ToString();
+                    if (string.IsNullOrEmpty(containerName))
+                    {
+                        OutputTextBox.Text = "Container name cannot be empty.";
+                        return;
+                    }
+
+                    var queryWindow = new Window
+                    {
+                        Title = "Enter Query",
+                        Width = 400,
+                        Height = 200,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+
+                    var queryStackPanel = new StackPanel();
+                    var queryTextBox = new TextBox { Margin = new Thickness(10), AcceptsReturn = true, Height = 100 };
+
+                    var queryOkButton = new Button
+                    {
+                        Content = "OK",
+                        Width = 75,
+                        Margin = new Thickness(10),
+                        HorizontalAlignment = HorizontalAlignment.Right
+                    };
+                    queryOkButton.Click += (s, e) => queryWindow.DialogResult = true;
+
+                    queryStackPanel.Children.Add(queryTextBox);
+                    queryStackPanel.Children.Add(queryOkButton);
+                    queryWindow.Content = queryStackPanel;
+
+                    if (queryWindow.ShowDialog() == true)
+                    {
+                        string query = queryTextBox.Text;
+                        if (string.IsNullOrEmpty(query))
+                        {
+                            OutputTextBox.Text = "Query cannot be empty.";
+                            return;
+                        }
+
+                        FeedIterator<dynamic> queryIterator = _cosmosExplorerHelper.GetQueryIterator(databaseName, containerName, query);
+                        while (queryIterator.HasMoreResults)
+                        {
+                            FeedResponse<dynamic> queryResponse = await queryIterator.ReadNextAsync().ConfigureAwait(true);
+                            foreach (var item in queryResponse)
+                            {
+                                OutputTextBox.Text += item.ToString() + Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private async Task CreateItemByDatabaseAndContainer()
         {
-            // Implement similar to SeeAllDatabases
+            OutputTextBox.Text = "This will be available soon";
         }
 
         private async Task DeleteItemByDatabaseAndContainer()
         {
-            // Implement similar to SeeAllDatabases
+            OutputTextBox.Text = "This will be available soon";
+        }
+
+        private async Task<List<string>> GetDatabases()
+        {
+            List<string> databaseNames = new List<string>();
+
+            FeedIterator<DatabaseProperties> iterator = _cosmosExplorerHelper.GetDatabaseIterator();
+
+            while (iterator.HasMoreResults)
+            {
+                FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync().ConfigureAwait(true);
+                foreach (var database in databases)
+                {
+                    databaseNames.Add(database.Id);
+                }
+            }
+
+            return databaseNames;
         }
     }
 }
