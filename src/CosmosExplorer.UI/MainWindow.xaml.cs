@@ -22,6 +22,8 @@ namespace CosmosExplorer.UI
             string connectionString = ConnectionStringTextBox.Text;
             _cosmosExplorerHelper = new CosmosExplorerCore(connectionString);
             OutputTextBox.Text = "Connected to Cosmos DB.";
+            Actions.IsEnabled = true;
+            OutputTextBox.IsEnabled = true;
         }
 
         private async void ExecuteButton_Click(object sender, RoutedEventArgs e)
