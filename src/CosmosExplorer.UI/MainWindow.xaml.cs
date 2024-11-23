@@ -216,11 +216,12 @@ namespace CosmosExplorer.UI
                         Title = "Enter Query",
                         Width = 400,
                         Height = 200,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                        
                     };
 
                     var queryStackPanel = new StackPanel();
-                    var queryTextBox = new TextBox { Margin = new Thickness(10), AcceptsReturn = true, Height = 100 };
+                    var queryTextBox = new TextBox { Margin = new Thickness(10), AcceptsReturn = true, Height = 100, Text = "Select * from c" };
 
                     var queryOkButton = new Button
                     {
@@ -260,12 +261,269 @@ namespace CosmosExplorer.UI
 
         private async Task CreateItemByDatabaseAndContainer()
         {
-            OutputTextBox.Text = "This will be available soon";
+            OutputTextBox.Text = string.Empty;
+
+            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+
+            var selectDatabaseWindow = new Window
+            {
+                Title = "Select Database",
+                Width = 300,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            var stackPanel = new StackPanel();
+            var comboBox = new ComboBox { Margin = new Thickness(10) };
+            foreach (var dbName in databaseNames)
+            {
+                comboBox.Items.Add(new ComboBoxItem { Content = dbName });
+            }
+            comboBox.SelectedIndex = 0;
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 75,
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            okButton.Click += (s, e) => selectDatabaseWindow.DialogResult = true;
+
+            stackPanel.Children.Add(comboBox);
+            stackPanel.Children.Add(okButton);
+            selectDatabaseWindow.Content = stackPanel;
+
+            if (selectDatabaseWindow.ShowDialog() == true)
+            {
+                string databaseName = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
+                if (string.IsNullOrEmpty(databaseName))
+                {
+                    OutputTextBox.Text = "Database name cannot be empty.";
+                    return;
+                }
+
+                var selectContainerWindow = new Window
+                {
+                    Title = "Select Container",
+                    Width = 300,
+                    Height = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+
+                var containerStackPanel = new StackPanel();
+                var containerComboBox = new ComboBox { Margin = new Thickness(10) };
+
+                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                while (containerIterator.HasMoreResults)
+                {
+                    FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
+                    foreach (var container in containerResponse)
+                    {
+                        containerComboBox.Items.Add(new ComboBoxItem { Content = container.Id });
+                    }
+                }
+                containerComboBox.SelectedIndex = 0;
+
+                var containerOkButton = new Button
+                {
+                    Content = "OK",
+                    Width = 75,
+                    Margin = new Thickness(10),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
+                containerOkButton.Click += (s, e) => selectContainerWindow.DialogResult = true;
+
+                containerStackPanel.Children.Add(containerComboBox);
+                containerStackPanel.Children.Add(containerOkButton);
+                selectContainerWindow.Content = containerStackPanel;
+
+                if (selectContainerWindow.ShowDialog() == true)
+                {
+                    string containerName = ((ComboBoxItem)containerComboBox.SelectedItem).Content.ToString();
+                    if (string.IsNullOrEmpty(containerName))
+                    {
+                        OutputTextBox.Text = "Container name cannot be empty.";
+                        return;
+                    }
+
+                    var itemWindow = new Window
+                    {
+                        Title = "Enter Item",
+                        Width = 400,
+                        Height = 300,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+
+                    var itemStackPanel = new StackPanel();
+                    var itemTextBox = new TextBox { Margin = new Thickness(10), AcceptsReturn = true, Height = 150 };
+                    var partitionKeyTextBox = new TextBox { Margin = new Thickness(10), Height = 30, Text = "Enter partition key" };
+
+                    var itemOkButton = new Button
+                    {
+                        Content = "OK",
+                        Width = 75,
+                        Margin = new Thickness(10),
+                        HorizontalAlignment = HorizontalAlignment.Right
+                    };
+                    itemOkButton.Click += (s, e) => itemWindow.DialogResult = true;
+
+                    itemStackPanel.Children.Add(itemTextBox);
+                    itemStackPanel.Children.Add(partitionKeyTextBox);
+                    itemStackPanel.Children.Add(itemOkButton);
+                    itemWindow.Content = itemStackPanel;
+
+                    if (itemWindow.ShowDialog() == true)
+                    {
+                        string itemJson = itemTextBox.Text;
+                        string partitionKey = partitionKeyTextBox.Text;
+
+                        if (string.IsNullOrEmpty(itemJson) || string.IsNullOrEmpty(partitionKey))
+                        {
+                            OutputTextBox.Text = "Item and partition key cannot be empty.";
+                            return;
+                        }
+
+                        dynamic item = Newtonsoft.Json.JsonConvert.DeserializeObject(itemJson);
+                        dynamic createdItem = await _cosmosExplorerHelper.UpsertItemAsync(databaseName, containerName, item, partitionKey);
+
+                        OutputTextBox.Text = $"Created item: {createdItem}";
+                    }
+                }
+            }
         }
 
         private async Task DeleteItemByDatabaseAndContainer()
         {
-            OutputTextBox.Text = "This will be available soon";
+            OutputTextBox.Text = string.Empty;
+
+            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+
+            var selectDatabaseWindow = new Window
+            {
+                Title = "Select Database",
+                Width = 300,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            var stackPanel = new StackPanel();
+            var comboBox = new ComboBox { Margin = new Thickness(10) };
+            foreach (var dbName in databaseNames)
+            {
+                comboBox.Items.Add(new ComboBoxItem { Content = dbName });
+            }
+            comboBox.SelectedIndex = 0;
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 75,
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            okButton.Click += (s, e) => selectDatabaseWindow.DialogResult = true;
+
+            stackPanel.Children.Add(comboBox);
+            stackPanel.Children.Add(okButton);
+            selectDatabaseWindow.Content = stackPanel;
+
+            if (selectDatabaseWindow.ShowDialog() == true)
+            {
+                string databaseName = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
+                if (string.IsNullOrEmpty(databaseName))
+                {
+                    OutputTextBox.Text = "Database name cannot be empty.";
+                    return;
+                }
+
+                var selectContainerWindow = new Window
+                {
+                    Title = "Select Container",
+                    Width = 300,
+                    Height = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+
+                var containerStackPanel = new StackPanel();
+                var containerComboBox = new ComboBox { Margin = new Thickness(10) };
+
+                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                while (containerIterator.HasMoreResults)
+                {
+                    FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
+                    foreach (var container in containerResponse)
+                    {
+                        containerComboBox.Items.Add(new ComboBoxItem { Content = container.Id });
+                    }
+                }
+                containerComboBox.SelectedIndex = 0;
+
+                var containerOkButton = new Button
+                {
+                    Content = "OK",
+                    Width = 75,
+                    Margin = new Thickness(10),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
+                containerOkButton.Click += (s, e) => selectContainerWindow.DialogResult = true;
+
+                containerStackPanel.Children.Add(containerComboBox);
+                containerStackPanel.Children.Add(containerOkButton);
+                selectContainerWindow.Content = containerStackPanel;
+
+                if (selectContainerWindow.ShowDialog() == true)
+                {
+                    string containerName = ((ComboBoxItem)containerComboBox.SelectedItem).Content.ToString();
+                    if (string.IsNullOrEmpty(containerName))
+                    {
+                        OutputTextBox.Text = "Container name cannot be empty.";
+                        return;
+                    }
+
+                    var itemWindow = new Window
+                    {
+                        Title = "Enter Item Details",
+                        Width = 400,
+                        Height = 200,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+
+                    var itemStackPanel = new StackPanel();
+                    var idTextBox = new TextBox { Margin = new Thickness(10), Height = 30, Text = "Enter item id" };
+                    var partitionKeyTextBox = new TextBox { Margin = new Thickness(10), Height = 30, Text = "Enter partition key" };
+
+                    var itemOkButton = new Button
+                    {
+                        Content = "OK",
+                        Width = 75,
+                        Margin = new Thickness(10),
+                        HorizontalAlignment = HorizontalAlignment.Right
+                    };
+                    itemOkButton.Click += (s, e) => itemWindow.DialogResult = true;
+
+                    itemStackPanel.Children.Add(idTextBox);
+                    itemStackPanel.Children.Add(partitionKeyTextBox);
+                    itemStackPanel.Children.Add(itemOkButton);
+                    itemWindow.Content = itemStackPanel;
+
+                    if (itemWindow.ShowDialog() == true)
+                    {
+                        string id = idTextBox.Text;
+                        string partitionKey = partitionKeyTextBox.Text;
+
+                        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(partitionKey))
+                        {
+                            OutputTextBox.Text = "Item id and partition key cannot be empty.";
+                            return;
+                        }
+
+                        dynamic deletedItem = await _cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey).ConfigureAwait(true);
+
+                        OutputTextBox.Text = $"Deleted item: {deletedItem}";
+                    }
+                }
+            }
         }
 
         private async Task<List<string>> GetDatabases()

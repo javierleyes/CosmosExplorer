@@ -1,20 +1,22 @@
 ﻿<Window x:Class="CosmosExplorer.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cosmos Explorer (Preview)" Height="450" Width="800">
+        Title="Cosmos Explorer (Preview)" Height="800" Width="1800">
     <Grid>
         <StackPanel>
-            <TextBox x:Name="ConnectionStringTextBox" Width="400" Margin="10" Text="Enter the connection string" Foreground="Gray"/>
-            <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click"/>
-            <ComboBox x:Name="OptionsComboBox" Width="400" Margin="10">
+            <StackPanel Width="1600" Orientation="Horizontal">
+                <TextBox x:Name="ConnectionStringTextBox" Width="1400" Margin="10" Text="Enter the connection string" Foreground="Gray" HorizontalAlignment="Left" FontSize="18"/>
+                <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" HorizontalAlignment="Right" FontSize="18"/>
+            </StackPanel>
+            <ComboBox x:Name="OptionsComboBox" Width="600" Margin="10" FontSize="18">
                 <ComboBoxItem Content="See all databases"/>
                 <ComboBoxItem Content="See all containers by a database"/>
                 <ComboBoxItem Content="Run a query by a database and a container"/>
                 <ComboBoxItem Content="Create or replace an item by a database, container and the item"/>
                 <ComboBoxItem Content="Delete an item by database, container, id and partitionKey"/>
             </ComboBox>
-            <Button Content="Execute" Width="100" Margin="10" Click="ExecuteButton_Click"/>
-            <TextBox x:Name="OutputTextBox" Width="400" Height="200" Margin="10" IsReadOnly="True" TextWrapping="Wrap"/>
+            <Button Content="Execute" Width="100" Margin="10" Click="ExecuteButton_Click" FontSize="18"/>
+            <TextBox x:Name="OutputTextBox" Width="1000" Height="400" Margin="10" IsReadOnly="True" TextWrapping="Wrap" FontSize="18"/>
         </StackPanel>
     </Grid>
 </Window>
