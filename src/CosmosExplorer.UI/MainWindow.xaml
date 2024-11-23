@@ -4,19 +4,21 @@
         Title="Cosmos Explorer (Preview)" Height="800" Width="1800">
     <Grid>
         <StackPanel>
-            <StackPanel Width="1600" Orientation="Horizontal">
-                <TextBox x:Name="ConnectionStringTextBox" Width="1400" Margin="10" Text="Enter the connection string" Foreground="Gray" HorizontalAlignment="Left" FontSize="18"/>
+            <StackPanel Width="1400" Orientation="Horizontal" Margin="0,0,0,60">
+                <TextBox x:Name="ConnectionStringTextBox" Width="1200" Margin="10" Text="Enter the connection string" Foreground="Gray" HorizontalAlignment="Left" FontSize="18" AcceptsReturn="True" TextWrapping="Wrap"/>
                 <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" HorizontalAlignment="Right" FontSize="18"/>
             </StackPanel>
-            <ComboBox x:Name="OptionsComboBox" Width="600" Margin="10" FontSize="18">
-                <ComboBoxItem Content="See all databases"/>
-                <ComboBoxItem Content="See all containers by a database"/>
-                <ComboBoxItem Content="Run a query by a database and a container"/>
-                <ComboBoxItem Content="Create or replace an item by a database, container and the item"/>
-                <ComboBoxItem Content="Delete an item by database, container, id and partitionKey"/>
-            </ComboBox>
-            <Button Content="Execute" Width="100" Margin="10" Click="ExecuteButton_Click" FontSize="18"/>
-            <TextBox x:Name="OutputTextBox" Width="1000" Height="400" Margin="10" IsReadOnly="True" TextWrapping="Wrap" FontSize="18"/>
+            <StackPanel x:Name="Actions" Width="900" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10" IsEnabled="False">
+                <ComboBox x:Name="OptionsComboBox" Width="600" Margin="10" FontSize="18">
+                    <ComboBoxItem Content="See all databases"/>
+                    <ComboBoxItem Content="See all containers by a database"/>
+                    <ComboBoxItem Content="Run a query by a database and a container"/>
+                    <ComboBoxItem Content="Create or replace an item by a database, container and the item"/>
+                    <ComboBoxItem Content="Delete an item by database, container, id and partitionKey"/>
+                </ComboBox>
+                <Button Content="Execute" Width="100" Margin="10" Click="ExecuteButton_Click" FontSize="18"/>
+            </StackPanel>
+            <TextBox x:Name="OutputTextBox" Width="1400" Height="400" Margin="10" IsReadOnly="True" TextWrapping="Wrap" FontSize="18" IsEnabled="False"/>
         </StackPanel>
     </Grid>
 </Window>
