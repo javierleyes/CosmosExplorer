@@ -6,7 +6,7 @@
 * Azure Cosmos DB emulator - Windows
 * Docker (Azure Cosmos DB emulator) - Linux
 
-### How to install Azure NoSQL
+### How to install Azure NoSQL (Docker)
 https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator?tabs=docker-windows%2Ccsharp&pivots=api-nosql
 
 Note: It's very important to use BASH.
@@ -26,3 +26,9 @@ mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
 
 1. Open a terminal
 2. docker run -it cosmosexplorerterminal (Interactive mode)
+
+## How to use Cosmos Explorer UI
+
+1. Install Azure cosmos DB Emulator
+2. Select CosmosExplorer.UI as startup project
+3. F5
