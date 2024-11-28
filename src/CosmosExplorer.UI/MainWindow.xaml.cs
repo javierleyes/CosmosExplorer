@@ -25,6 +25,11 @@ namespace CosmosExplorer.UI
             Actions.IsEnabled = true;
             OutputTextBox.IsEnabled = true;
         }
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow aboutWindow = new AboutWindow();
+            aboutWindow.ShowDialog();
+        }
 
         private async void ExecuteButton_Click(object sender, RoutedEventArgs e)
         {

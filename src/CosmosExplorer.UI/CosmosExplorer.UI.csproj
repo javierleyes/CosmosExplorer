@@ -9,7 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="icons\Cosmos-DB.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CosmosExplorer\CosmosExplorer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Menu\File\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\Cosmos-DB.ico" />
   </ItemGroup>
 
 </Project>

@@ -82,6 +82,6 @@ Install-ChocolateyInstallPackage $env:ChocolateyPackageName 'exe' '/VERYSILENT' 
 5) choco install cosmosexplorer --debug --verbose --source .
 
 6) Upload package
-choco push cosmosexplorer.1.0.0.nupkg --key "your-api-key"
+choco push {cosmosexplorer.1.0.0.nupkg} --source https://push.chocolatey.org/
 
 
