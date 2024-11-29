@@ -72,7 +72,6 @@ Example
 3) Adjust chocolateyinstall.ps1
 ```
 $ErrorActionPreference = 'Stop' # stop on all errors
-Install-ChocolateyInstallPackage $env:ChocolateyPackageName 'exe' '/VERYSILENT' "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)\CosmosExplorer.UI.exe"
 ```
 
 # Generate the package

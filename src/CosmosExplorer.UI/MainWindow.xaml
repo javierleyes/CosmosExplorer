@@ -6,19 +6,15 @@
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Connect"/>
+                <MenuItem Header="Connect" Click="OpenConnectionModal_Click"/>
                 <Separator/>
-                <MenuItem Header="Exit"/>
+                <MenuItem Header="Exit" Click="CloseApplication_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About Cosmos Explorer" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
         <StackPanel Margin="0,30,0,0">
-            <StackPanel Width="1400" Orientation="Horizontal" Margin="0,0,0,60">
-                <TextBox x:Name="ConnectionStringTextBox" Width="1200" Margin="10" Text="Enter the connection string" Foreground="Gray" HorizontalAlignment="Left" FontSize="18" AcceptsReturn="True" TextWrapping="Wrap"/>
-                <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" HorizontalAlignment="Right" FontSize="18"/>
-            </StackPanel>
             <StackPanel x:Name="Actions" Width="900" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10" IsEnabled="False">
                 <ComboBox x:Name="OptionsComboBox" Width="600" Margin="10" FontSize="18">
                     <ComboBoxItem Content="See all databases"/>
