@@ -1,4 +1,4 @@
-﻿using CosmosExplorer.Core;
+﻿using CosmosExplorer.UI.Common;
 using Microsoft.Azure.Cosmos;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,21 +10,23 @@ namespace CosmosExplorer.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private CosmosExplorerCore _cosmosExplorerHelper;
-
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void ConnectButton_Click(object sender, RoutedEventArgs e)
+        private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
         {
-            string connectionString = ConnectionStringTextBox.Text;
-            _cosmosExplorerHelper = new CosmosExplorerCore(connectionString);
-            OutputTextBox.Text = "Connected to Cosmos DB.";
-            Actions.IsEnabled = true;
-            OutputTextBox.IsEnabled = true;
+            ConnectResourceGroupModal modal = new ConnectResourceGroupModal();
+            modal.Owner = this;
+            modal.ShowDialog();
         }
+
+        private void CloseApplication_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             AboutWindow aboutWindow = new AboutWindow();
@@ -33,7 +35,7 @@ namespace CosmosExplorer.UI
 
         private async void ExecuteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_cosmosExplorerHelper == null)
+            if (SharedProperties.CosmosExplorerCore is null)
             {
                 OutputTextBox.Text = "Please connect to Cosmos DB first.";
                 return;
@@ -117,7 +119,7 @@ namespace CosmosExplorer.UI
                     return;
                 }
 
-                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                FeedIterator<ContainerProperties> containerIterator = SharedProperties.CosmosExplorerCore.GetContainerIterator(databaseName);
                 OutputTextBox.Text = string.Empty;
                 while (containerIterator.HasMoreResults)
                 {
@@ -185,7 +187,7 @@ namespace CosmosExplorer.UI
                 var containerStackPanel = new StackPanel();
                 var containerComboBox = new ComboBox { Margin = new Thickness(10) };
 
-                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                FeedIterator<ContainerProperties> containerIterator = SharedProperties.CosmosExplorerCore.GetContainerIterator(databaseName);
                 while (containerIterator.HasMoreResults)
                 {
                     FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
@@ -252,7 +254,7 @@ namespace CosmosExplorer.UI
                             return;
                         }
 
-                        FeedIterator<dynamic> queryIterator = _cosmosExplorerHelper.GetQueryIterator(databaseName, containerName, query);
+                        FeedIterator<dynamic> queryIterator = SharedProperties.CosmosExplorerCore.GetQueryIterator(databaseName, containerName, query);
                         while (queryIterator.HasMoreResults)
                         {
                             FeedResponse<dynamic> queryResponse = await queryIterator.ReadNextAsync().ConfigureAwait(true);
@@ -321,7 +323,7 @@ namespace CosmosExplorer.UI
                 var containerStackPanel = new StackPanel();
                 var containerComboBox = new ComboBox { Margin = new Thickness(10) };
 
-                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                FeedIterator<ContainerProperties> containerIterator = SharedProperties.CosmosExplorerCore.GetContainerIterator(databaseName);
                 while (containerIterator.HasMoreResults)
                 {
                     FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
@@ -392,7 +394,7 @@ namespace CosmosExplorer.UI
                         }
 
                         dynamic item = Newtonsoft.Json.JsonConvert.DeserializeObject(itemJson);
-                        dynamic createdItem = await _cosmosExplorerHelper.UpsertItemAsync(databaseName, containerName, item, partitionKey);
+                        dynamic createdItem = await SharedProperties.CosmosExplorerCore.UpsertItemAsync(databaseName, containerName, item, partitionKey);
 
                         OutputTextBox.Text = $"Created item: {createdItem}";
                     }
@@ -455,7 +457,7 @@ namespace CosmosExplorer.UI
                 var containerStackPanel = new StackPanel();
                 var containerComboBox = new ComboBox { Margin = new Thickness(10) };
 
-                FeedIterator<ContainerProperties> containerIterator = _cosmosExplorerHelper.GetContainerIterator(databaseName);
+                FeedIterator<ContainerProperties> containerIterator = SharedProperties.CosmosExplorerCore.GetContainerIterator(databaseName);
                 while (containerIterator.HasMoreResults)
                 {
                     FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
@@ -525,7 +527,7 @@ namespace CosmosExplorer.UI
                             return;
                         }
 
-                        dynamic deletedItem = await _cosmosExplorerHelper.DeleteItemAsync(databaseName, containerName, id, partitionKey).ConfigureAwait(true);
+                        dynamic deletedItem = await SharedProperties.CosmosExplorerCore.DeleteItemAsync(databaseName, containerName, id, partitionKey).ConfigureAwait(true);
 
                         OutputTextBox.Text = $"Deleted item: {deletedItem}";
                     }
@@ -537,7 +539,7 @@ namespace CosmosExplorer.UI
         {
             List<string> databaseNames = new List<string>();
 
-            FeedIterator<DatabaseProperties> iterator = _cosmosExplorerHelper.GetDatabaseIterator();
+            FeedIterator<DatabaseProperties> iterator = SharedProperties.CosmosExplorerCore.GetDatabaseIterator();
 
             while (iterator.HasMoreResults)
             {

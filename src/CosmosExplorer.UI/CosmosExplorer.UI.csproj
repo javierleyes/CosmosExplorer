@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Menu\File\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="icons\Cosmos-DB.ico" />
   </ItemGroup>
 
