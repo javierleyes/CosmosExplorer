@@ -25,6 +25,7 @@ namespace CosmosExplorer.UI
                 mainWindow.OutputTextBox.Text = "Connected to Cosmos DB.";
                 mainWindow.Actions.IsEnabled = true;
                 mainWindow.OutputTextBox.IsEnabled = true;
+                mainWindow.LeftPanel.IsEnabled = true;
             }
 
             await SharedProperties.LoadDatabasesAsync().ConfigureAwait(true);
