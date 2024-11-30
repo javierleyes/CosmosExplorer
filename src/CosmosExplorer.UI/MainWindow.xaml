@@ -19,7 +19,6 @@
         <StackPanel Margin="0,30,0,0">
             <StackPanel x:Name="Actions" Width="900" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10" IsEnabled="False">
                 <ComboBox x:Name="OptionsComboBox" Width="600" Margin="10" FontSize="18">
-                    <ComboBoxItem Content="See all containers by a database"/>
                     <ComboBoxItem Content="Run a query by a database and a container"/>
                     <ComboBoxItem Content="Create or replace an item by a database, container and the item"/>
                     <ComboBoxItem Content="Delete an item by database, container, id and partitionKey"/>
@@ -28,14 +27,21 @@
             </StackPanel>
             <TextBox x:Name="OutputTextBox" Width="1400" Height="400" Margin="10" IsReadOnly="True" TextWrapping="Wrap" FontSize="18" IsEnabled="False"/>
 
-            <!-- TreeView to display database names -->
             <TreeView x:Name="DatabaseTreeView" Width="400" Height="200" Margin="10">
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type local:DatabaseTreeSource}" ItemsSource="{Binding}">
-                        <StackPanel Orientation="Horizontal" Margin="8" >
+                    <HierarchicalDataTemplate DataType="{x:Type local:DatabaseTreeSource}" ItemsSource="{Binding Containers}">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,8,8">
                             <Image Source="/icons/Cosmos-DB.ico" Width="16" Height="16" />
                             <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="16" />
                         </StackPanel>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ContainerTreeSource}">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,8,8">
+                                    <Image Source="/icons/Container.ico" Width="16" Height="16" />
+                                    <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="16" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
