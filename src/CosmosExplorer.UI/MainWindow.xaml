@@ -32,11 +32,14 @@
             <TreeView x:Name="DatabaseTreeView" Width="400" Height="200" Margin="10">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:DatabaseTreeSource}" ItemsSource="{Binding}">
-                        <TextBlock Text="{Binding Name}" />
+                        <StackPanel Orientation="Horizontal" Margin="8" >
+                            <Image Source="/icons/Cosmos-DB.ico" Width="16" Height="16" />
+                            <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="16" />
+                        </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            
+
         </StackPanel>
     </Grid>
 </Window>
