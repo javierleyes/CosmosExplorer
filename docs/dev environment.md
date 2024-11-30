@@ -55,7 +55,7 @@ Example
     <projectUrl>https://github.com/javierleyes/CosmosExplorer</projectUrl>
     <packageSourceUrl>https://github.com/javierleyes/CosmosExplorer</packageSourceUrl>
     <copyright>Copyright 2024 Javier Leyes</copyright>
-    <iconUrl>https://github.com/javierleyes/CosmosExplorer/blob/main/assets/icons/AzureCosmosDB.svg</iconUrl>
+    <iconUrl>https://github.com/javierleyes/CosmosExplorer/blob/main/assets/icons/Cosmos-DB.ico</iconUrl>
     <docsUrl>https://github.com/javierleyes/CosmosExplorer/tree/main/docs</docsUrl>
     <bugTrackerUrl>https://github.com/javierleyes/CosmosExplorer/issues</bugTrackerUrl>
     <tags>cosmosexplorer azure cosmos nosql</tags>

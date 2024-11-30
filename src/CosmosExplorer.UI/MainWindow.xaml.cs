@@ -46,9 +46,6 @@ namespace CosmosExplorer.UI
             string selectedOption = ((ComboBoxItem)OptionsComboBox.SelectedItem).Content.ToString();
             switch (selectedOption)
             {
-                case "See all containers by a database":
-                    await SeeAllContainersByDatabase().ConfigureAwait(true);
-                    break;
                 case "Run a query by a database and a container":
                     await RunQueryByDatabaseAndContainer().ConfigureAwait(true);
                     break;
@@ -61,61 +58,6 @@ namespace CosmosExplorer.UI
                 default:
                     OutputTextBox.Text = "Invalid option selected.";
                     break;
-            }
-        }
-
-        private async Task SeeAllContainersByDatabase()
-        {
-            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
-
-            var selectDatabaseWindow = new Window
-            {
-                Title = "Select Database",
-                Width = 300,
-                Height = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-
-            var stackPanel = new StackPanel();
-            var comboBox = new ComboBox { Margin = new Thickness(10) };
-            foreach (var dbName in databaseNames)
-            {
-                comboBox.Items.Add(new ComboBoxItem { Content = dbName });
-            }
-            comboBox.SelectedIndex = 0;
-
-            var okButton = new Button
-            {
-                Content = "OK",
-                Width = 75,
-                Margin = new Thickness(10),
-                HorizontalAlignment = HorizontalAlignment.Right
-            };
-            okButton.Click += (s, e) => selectDatabaseWindow.DialogResult = true;
-
-            stackPanel.Children.Add(comboBox);
-            stackPanel.Children.Add(okButton);
-            selectDatabaseWindow.Content = stackPanel;
-
-            if (selectDatabaseWindow.ShowDialog() == true)
-            {
-                string databaseName = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
-                if (string.IsNullOrEmpty(databaseName))
-                {
-                    OutputTextBox.Text = "Database name cannot be empty.";
-                    return;
-                }
-
-                FeedIterator<ContainerProperties> containerIterator = SharedProperties.CosmosExplorerCore.GetContainerIterator(databaseName);
-                OutputTextBox.Text = string.Empty;
-                while (containerIterator.HasMoreResults)
-                {
-                    FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
-                    foreach (var container in containerResponse)
-                    {
-                        OutputTextBox.Text += $"  Container: {container.Id}" + Environment.NewLine;
-                    }
-                }
             }
         }
 

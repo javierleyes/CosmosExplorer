@@ -1,6 +1,5 @@
 ﻿using CosmosExplorer.Core;
 using CosmosExplorer.UI.Common;
-using System;
 using System.Windows;
 
 namespace CosmosExplorer.UI
@@ -28,9 +27,7 @@ namespace CosmosExplorer.UI
                 mainWindow.OutputTextBox.IsEnabled = true;
             }
 
-            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
-
-            SharedProperties.DatabaseCollection.LoadDatabases(databaseNames);
+            await SharedProperties.LoadDatabasesAsync().ConfigureAwait(true);
 
             // Close the modal
             this.Close();
