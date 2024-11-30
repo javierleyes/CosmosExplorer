@@ -13,6 +13,8 @@ namespace CosmosExplorer.UI
         public MainWindow()
         {
             InitializeComponent();
+            SharedProperties.DatabaseCollection = new DatabaseTreeCollection();
+            DatabaseTreeView.ItemsSource = SharedProperties.DatabaseCollection;
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
@@ -44,9 +46,6 @@ namespace CosmosExplorer.UI
             string selectedOption = ((ComboBoxItem)OptionsComboBox.SelectedItem).Content.ToString();
             switch (selectedOption)
             {
-                case "See all databases":
-                    await SeeAllDatabases().ConfigureAwait(true);
-                    break;
                 case "See all containers by a database":
                     await SeeAllContainersByDatabase().ConfigureAwait(true);
                     break;
@@ -65,21 +64,9 @@ namespace CosmosExplorer.UI
             }
         }
 
-        private async Task SeeAllDatabases()
-        {
-            OutputTextBox.Text = string.Empty;
-
-            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
-
-            foreach (string databaseName in databaseNames)
-            {
-                OutputTextBox.Text += databaseName + Environment.NewLine;
-            }
-        }
-
         private async Task SeeAllContainersByDatabase()
         {
-            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
 
             var selectDatabaseWindow = new Window
             {
@@ -136,7 +123,7 @@ namespace CosmosExplorer.UI
         {
             OutputTextBox.Text = string.Empty;
 
-            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
 
             var selectDatabaseWindow = new Window
             {
@@ -272,7 +259,7 @@ namespace CosmosExplorer.UI
         {
             OutputTextBox.Text = string.Empty;
 
-            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
 
             var selectDatabaseWindow = new Window
             {
@@ -406,7 +393,7 @@ namespace CosmosExplorer.UI
         {
             OutputTextBox.Text = string.Empty;
 
-            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
+            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
 
             var selectDatabaseWindow = new Window
             {
@@ -533,24 +520,6 @@ namespace CosmosExplorer.UI
                     }
                 }
             }
-        }
-
-        private async Task<List<string>> GetDatabases()
-        {
-            List<string> databaseNames = new List<string>();
-
-            FeedIterator<DatabaseProperties> iterator = SharedProperties.CosmosExplorerCore.GetDatabaseIterator();
-
-            while (iterator.HasMoreResults)
-            {
-                FeedResponse<DatabaseProperties> databases = await iterator.ReadNextAsync().ConfigureAwait(true);
-                foreach (var database in databases)
-                {
-                    databaseNames.Add(database.Id);
-                }
-            }
-
-            return databaseNames;
         }
     }
 }

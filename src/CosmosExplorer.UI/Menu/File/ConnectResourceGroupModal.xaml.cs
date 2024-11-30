@@ -15,7 +15,7 @@ namespace CosmosExplorer.UI
             InitializeComponent();
         }
 
-        private void ConnectButton_Click(object sender, RoutedEventArgs e)
+        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
             string connectionString = ConnectionStringTextBox.Text;
             SharedProperties.CosmosExplorerCore = new CosmosExplorerCore(connectionString);
@@ -27,6 +27,10 @@ namespace CosmosExplorer.UI
                 mainWindow.Actions.IsEnabled = true;
                 mainWindow.OutputTextBox.IsEnabled = true;
             }
+
+            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
+
+            SharedProperties.DatabaseCollection.LoadDatabases(databaseNames);
 
             // Close the modal
             this.Close();
