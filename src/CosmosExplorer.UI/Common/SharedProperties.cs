@@ -72,6 +72,8 @@ namespace CosmosExplorer.UI.Common
 
         public static async Task LoadItemsAsync(string databaseName, string containerName)
         {
+            ItemListViewCollection.Clear();
+
             string query = "SELECT TOP 10 * FROM c";
             List<Tuple<string, string>> items = new List<Tuple<string, string>>();
 
