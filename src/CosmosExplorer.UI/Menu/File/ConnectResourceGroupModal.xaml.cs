@@ -26,6 +26,7 @@ namespace CosmosExplorer.UI
                 mainWindow.Actions.IsEnabled = true;
                 mainWindow.OutputTextBox.IsEnabled = true;
                 mainWindow.LeftPanel.IsEnabled = true;
+                mainWindow.Items.IsEnabled = true;
             }
 
             await SharedProperties.LoadDatabasesAsync().ConfigureAwait(true);

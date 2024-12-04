@@ -2,6 +2,7 @@
 using Microsoft.Azure.Cosmos;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace CosmosExplorer.UI
 {
@@ -13,8 +14,49 @@ namespace CosmosExplorer.UI
         public MainWindow()
         {
             InitializeComponent();
+
             SharedProperties.DatabaseCollection = new DatabaseTreeCollection();
             DatabaseTreeView.ItemsSource = SharedProperties.DatabaseCollection;
+
+            SharedProperties.ItemListViewCollection = new ItemListViewCollection();
+            ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
+        }
+
+        private async void DatabaseTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is not ContainerTreeSource selectedContainer)
+            {
+                return;
+            }
+
+            SharedProperties.SelectedDatabase = selectedContainer.Database;
+            SharedProperties.SelectedContainer = selectedContainer.Name;
+
+            await SharedProperties.LoadItemsAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer).ConfigureAwait(true);
+        }
+
+        private TreeViewItem GetParentTreeViewItem(DependencyObject item)
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(item);
+            while (parent != null && !(parent is TreeViewItem))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+            return parent as TreeViewItem;
+        }
+
+        private void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = ItemListView.SelectedItem;
+            if (selectedItem is null)
+            {
+                return;
+            }
+
+            var itemId = selectedItem.GetType().GetProperty("Id")?.GetValue(selectedItem, null);
+            var partitionKey = selectedItem.GetType().GetProperty("PartitionKey")?.GetValue(selectedItem, null);
+
+            OutputTextBox.Text = $"Selected Item:\nId: {itemId}\nPartitionKey: {partitionKey}";
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
