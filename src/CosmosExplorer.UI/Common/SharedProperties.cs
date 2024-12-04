@@ -9,6 +9,14 @@ namespace CosmosExplorer.UI.Common
 
         public static DatabaseTreeCollection DatabaseCollection { get; set; }
 
+        public static ItemListViewCollection ItemListViewCollection { get; set; }
+
+        public static Dictionary<string, string> ContainerPartitionKey { get; set; }
+
+        public static string SelectedDatabase { get; set; }
+
+        public static string SelectedContainer { get; set; }
+
         public static async Task<List<string>> GetDatabases()
         {
             List<string> databaseNames = new List<string>();
@@ -27,22 +35,26 @@ namespace CosmosExplorer.UI.Common
             return databaseNames;
         }
 
-        public static async Task<Dictionary<string, List<string>>> GetDatabasesInformationAsync()
+        public static async Task<Dictionary<string, List<ContainerInformation>>> GetDatabasesInformationAsync()
         {
-            Dictionary<string, List<string>> databases = new Dictionary<string, List<string>>();
+            Dictionary<string, List<ContainerInformation>> databases = new Dictionary<string, List<ContainerInformation>>();
+            ContainerPartitionKey = new Dictionary<string, string>();
 
-            List<string> databaseNames = await SharedProperties.GetDatabases().ConfigureAwait(true);
+            List<string> databaseNames = await GetDatabases().ConfigureAwait(true);
             foreach (var database in databaseNames)
             {
-                List<string> containers = new List<string>();
+                List<ContainerInformation> containers = new List<ContainerInformation>();
 
-                FeedIterator<ContainerProperties> containerIterator = SharedProperties.CosmosExplorerCore.GetContainerIterator(database);
+                FeedIterator<ContainerProperties> containerIterator = CosmosExplorerCore.GetContainerIterator(database);
                 while (containerIterator.HasMoreResults)
                 {
                     FeedResponse<ContainerProperties> containerResponse = await containerIterator.ReadNextAsync().ConfigureAwait(true);
                     foreach (var container in containerResponse)
                     {
-                        containers.Add(container.Id);
+                        ContainerInformation containerInformation = new ContainerInformation(container.Id, database, container.PartitionKeyPath);
+                        containers.Add(containerInformation);
+
+                        ContainerPartitionKey.Add(container.Id, container.PartitionKeyPath);
                     }
                 }
 
@@ -54,8 +66,28 @@ namespace CosmosExplorer.UI.Common
 
         public static async Task LoadDatabasesAsync()
         {
-            Dictionary<string, List<string>> databases = await GetDatabasesInformationAsync().ConfigureAwait(true);
+            Dictionary<string, List<ContainerInformation>> databases = await GetDatabasesInformationAsync().ConfigureAwait(true);
             DatabaseCollection.LoadDatabases(databases);
+        }
+
+        public static async Task LoadItemsAsync(string databaseName, string containerName)
+        {
+            string query = "SELECT TOP 10 * FROM c";
+            List<Tuple<string, string>> items = new List<Tuple<string, string>>();
+
+            FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(databaseName, containerName, query);
+
+            while (iterator.HasMoreResults)
+            {
+                FeedResponse<dynamic> response = await iterator.ReadNextAsync().ConfigureAwait(true);
+                foreach (var item in response)
+                {
+                    string partitionKey = ContainerPartitionKey[containerName].TrimStart('/');
+                    items.Add(new Tuple<string, string>(item["id"].ToString(), item[partitionKey].ToString()));
+                }
+            }
+
+            ItemListViewCollection.LoadItems(items);
         }
     }
 }

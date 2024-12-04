@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using CosmosExplorer.UI.Common;
+using System.Collections.ObjectModel;
 
 namespace CosmosExplorer.UI
 {
@@ -6,9 +7,15 @@ namespace CosmosExplorer.UI
     {
         public string Name { get; set; }
 
-        public ContainerTreeSource(string name)
+        public string Database { get; set; }
+
+        public string PartitionKey { get; set; }
+
+        public ContainerTreeSource(string name, string database, string partitionKey)
         {
-             Name = name;
+            Name = name;
+            Database = database;
+            PartitionKey = partitionKey;
         }
     }
 
@@ -18,21 +25,21 @@ namespace CosmosExplorer.UI
 
         public ObservableCollection<ContainerTreeSource> Containers { get; set; }
 
-        public DatabaseTreeSource(string name, List<string> containerNames)
+        public DatabaseTreeSource(string name, List<ContainerInformation> containers)
         {
             Name = name;
 
             Containers = new ObservableCollection<ContainerTreeSource>();
-            foreach (var containerName in containerNames)
+            foreach (ContainerInformation container in containers)
             {
-                Containers.Add(new ContainerTreeSource(containerName));
+                Containers.Add(new ContainerTreeSource(container.Name, container.Database, container.PartitionKey));
             }
         }
     }
 
     public class DatabaseTreeCollection : ObservableCollection<DatabaseTreeSource>
     {
-        public void LoadDatabases(Dictionary<string, List<string>> databases)
+        public void LoadDatabases(Dictionary<string, List<ContainerInformation>> databases)
         {
             foreach (string database in databases.Keys)
             {
