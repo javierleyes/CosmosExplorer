@@ -45,7 +45,7 @@ namespace CosmosExplorer.UI
             return parent as TreeViewItem;
         }
 
-        private void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedItem = ItemListView.SelectedItem;
             if (selectedItem is null)
@@ -53,10 +53,19 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            var itemId = selectedItem.GetType().GetProperty("Id")?.GetValue(selectedItem, null);
-            var partitionKey = selectedItem.GetType().GetProperty("PartitionKey")?.GetValue(selectedItem, null);
+            string? itemId = selectedItem?.GetType().GetProperty("Id")?.GetValue(selectedItem, null) as string;
+            if (string.IsNullOrEmpty(itemId))
+            {
+                return;
+            }
 
-            OutputTextBox.Text = $"Selected Item:\nId: {itemId}\nPartitionKey: {partitionKey}";
+            dynamic item = await SharedProperties.CosmosExplorerCore.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, itemId).ConfigureAwait(true);
+
+            // Use Dispatcher to update the UI
+            Dispatcher.Invoke(() =>
+            {
+                OutputTextBox.Text = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
+            });
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)

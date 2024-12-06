@@ -18,8 +18,8 @@
 
         <StackPanel Orientation="Horizontal" Margin="30,45,30,45">
 
-            <StackPanel x:Name="LeftPanel" IsEnabled="False" Width="200" Height="800" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TreeView x:Name="DatabaseTreeView" Width="200" Height="800" SelectedItemChanged="DatabaseTreeView_SelectedItemChanged">
+            <StackPanel x:Name="LeftPanel" IsEnabled="False" Width="200" Height="860" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TreeView x:Name="DatabaseTreeView" Width="200" Height="860" SelectedItemChanged="DatabaseTreeView_SelectedItemChanged">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:DatabaseTreeSource}" ItemsSource="{Binding Containers}">
                             <StackPanel Orientation="Horizontal" Margin="0,0,8,8">
@@ -39,31 +39,31 @@
                 </TreeView>
             </StackPanel>
 
-            <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1500" Height="800" Margin="20,0,0,0">
+            <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1500" Height="860" Margin="20,0,0,0">
 
                 <StackPanel x:Name="Actions" Orientation="Horizontal" VerticalAlignment="Top" Width="1500" IsEnabled="False">
                     
-                    <ComboBox x:Name="OptionsComboBox" Width="1400" Height="40" FontSize="18">
+                    <ComboBox x:Name="OptionsComboBox" Width="1400" Height="30" FontSize="18">
                         <ComboBoxItem Content="Run a query by a database and a container"/>
                         <ComboBoxItem Content="Create or replace an item by a database, container and the item"/>
                         <ComboBoxItem Content="Delete an item by database, container, id and partitionKey"/>
                     </ComboBox>
                     
-                    <Button Content="Execute" Width="100" Click="ExecuteButton_Click" Height="40" FontSize="18"/>
+                    <Button Content="Execute" Width="100" Click="ExecuteButton_Click" Height="30" FontSize="18"/>
                 </StackPanel>
 
-                <StackPanel x:Name="Items" Orientation="Horizontal" Width="1500" Height="750" IsEnabled="False" Margin="0,10,0,0">
+                <StackPanel x:Name="Items" Orientation="Horizontal" Width="1500" Height="820" IsEnabled="False" Margin="0,10,0,0">
 
-                    <ListView x:Name="ItemListView" Width="400" Height="750" SelectionChanged="ItemsListView_SelectionChanged">
+                    <ListView x:Name="ItemListView" Width="400" Height="810" SelectionChanged="ItemsListView_SelectionChanged">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="200"/>
-                                <GridViewColumn Header="PartitionKey" DisplayMemberBinding="{Binding PartitionKey}" Width="200"/>
+                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="190"/>
+                                <GridViewColumn Header="PartitionKey" DisplayMemberBinding="{Binding PartitionKey}" Width="190"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
 
-                    <TextBox x:Name="OutputTextBox" Width="1080" Height="750" Margin="20,0,0,0" IsReadOnly="True" TextWrapping="Wrap" FontSize="18" IsEnabled="False"/>
+                    <TextBox x:Name="OutputTextBox" Width="1080" Height="810" Margin="20,0,0,0" TextWrapping="Wrap" FontSize="18" IsEnabled="False"/>
                 </StackPanel>
 
             </StackPanel>

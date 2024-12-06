@@ -77,6 +77,30 @@ namespace CosmosExplorer.Core
         }
 
         /// <summary>
+        /// Retrieves an item from the specified container within the specified database using the item's id and partition key.
+        /// </summary>
+        /// <param name="databaseName">The name of the database containing the container.</param>
+        /// <param name="containerName">The name of the container to retrieve the item from.</param>
+        /// <param name="id">The ID of the item to retrieve.</param>
+        /// <returns>A task representing the asynchronous operation, with a dynamic result containing the retrieved item.</returns>
+        public async Task<dynamic> GetItemByIdAsync(string databaseName, string containerName, string id)
+        {
+            string query = $"SELECT * FROM c WHERE c.id = '{id}'";
+            FeedIterator<dynamic> queryIterator = this.GetQueryIterator(databaseName, containerName, query);
+
+            while (queryIterator.HasMoreResults)
+            {
+                FeedResponse<dynamic> response = await queryIterator.ReadNextAsync().ConfigureAwait(false);
+                foreach (var item in response)
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Upserts an item in the specified container within the specified database.
         /// If the item does not exist, it will be created. If it exists, it will be updated.
         /// </summary>
