@@ -17,18 +17,18 @@ namespace CosmosExplorer.UI
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
             string connectionString = ConnectionStringTextBox.Text;
-            SharedProperties.CosmosExplorerCore = new CosmosExplorerCore(connectionString);
+            CosmosExplorerHelper.CosmosExplorerCore = new CosmosExplorerCore(connectionString);
 
             // Get the MainWindow instance
             if (Application.Current.MainWindow is MainWindow mainWindow)
             {
                 mainWindow.FilterPanel.IsEnabled = true;
-                mainWindow.OutputTextBox.IsEnabled = true;
+                mainWindow.ItemDescriptionTextBox.IsEnabled = true;
                 mainWindow.LeftPanel.IsEnabled = true;
                 mainWindow.Items.IsEnabled = true;
             }
 
-            await SharedProperties.LoadDatabasesAsync().ConfigureAwait(true);
+            await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
 
             // Close the modal
             this.Close();

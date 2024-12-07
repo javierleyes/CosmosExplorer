@@ -27,14 +27,14 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            SharedProperties.SelectedDatabase = selectedContainer.Database;
-            SharedProperties.SelectedContainer = selectedContainer.Name;
-
-            await SharedProperties.LoadItemsAsync().ConfigureAwait(true);
+            await CosmosExplorerHelper.LoadItemsAsync(selectedContainer.Database, selectedContainer.Name).ConfigureAwait(true);
+            ItemDescriptionTextBox.Text = string.Empty;
         }
 
         private async void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            DeleteButton.IsEnabled = false;
+
             var selectedItem = ItemListView.SelectedItem;
             if (selectedItem is null)
             {
@@ -47,12 +47,23 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            dynamic item = await SharedProperties.CosmosExplorerCore.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, itemId).ConfigureAwait(true);
+            string? partitionKey = selectedItem?.GetType().GetProperty("PartitionKey")?.GetValue(selectedItem, null) as string;
+            if (string.IsNullOrEmpty(partitionKey))
+            {
+                return;
+            }
+
+            SharedProperties.SelectedItemId = itemId;
+            SharedProperties.SelectedItemPartitionKey = partitionKey;
+
+            DeleteButton.IsEnabled = true;
+
+            dynamic item = await CosmosExplorerHelper.CosmosExplorerCore.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, SharedProperties.SelectedItemId).ConfigureAwait(true);
 
             // Use Dispatcher to update the UI
             Dispatcher.Invoke(() =>
             {
-                OutputTextBox.Text = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
+                ItemDescriptionTextBox.Text = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
             });
         }
 
@@ -77,7 +88,35 @@ namespace CosmosExplorer.UI
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Validate query.
-            await SharedProperties.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+            await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+        }
+
+        private void NewItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Discard_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            await CosmosExplorerHelper.DeleteItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey).ConfigureAwait(true);
+
+            SharedProperties.ItemListViewCollection.RemoveAt(ItemListView.SelectedIndex);
+            ItemDescriptionTextBox.Text = string.Empty;
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
