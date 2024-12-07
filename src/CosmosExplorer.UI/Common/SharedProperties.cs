@@ -8,6 +8,8 @@
 
         public static Dictionary<string, string> ContainerPartitionKey { get; set; }
 
+        public static LoaderIndicator LoaderIndicator { get; set; }
+
         public static string SelectedDatabase { get; set; }
 
         public static string SelectedContainer { get; set; }

@@ -1,5 +1,4 @@
-﻿using CosmosExplorer.Core;
-using CosmosExplorer.UI.Common;
+﻿using CosmosExplorer.UI.Common;
 using System.Windows;
 
 namespace CosmosExplorer.UI
@@ -17,7 +16,9 @@ namespace CosmosExplorer.UI
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
             string connectionString = ConnectionStringTextBox.Text;
-            CosmosExplorerHelper.CosmosExplorerCore = new CosmosExplorerCore(connectionString);
+            CosmosExplorerHelper.Initialize(connectionString);
+
+            SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
 
             // Get the MainWindow instance
             if (Application.Current.MainWindow is MainWindow mainWindow)
@@ -32,6 +33,8 @@ namespace CosmosExplorer.UI
 
             // Close the modal
             this.Close();
+
+            SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
         }
     }
 }

@@ -13,6 +13,9 @@ namespace CosmosExplorer.UI
         {
             InitializeComponent();
 
+            SharedProperties.LoaderIndicator = new LoaderIndicator();
+            DataContext = SharedProperties.LoaderIndicator;
+
             SharedProperties.DatabaseCollection = new DatabaseTreeCollection();
             DatabaseTreeView.ItemsSource = SharedProperties.DatabaseCollection;
 
@@ -58,7 +61,7 @@ namespace CosmosExplorer.UI
 
             DeleteButton.IsEnabled = true;
 
-            dynamic item = await CosmosExplorerHelper.CosmosExplorerCore.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, SharedProperties.SelectedItemId).ConfigureAwait(true);
+            dynamic item = await CosmosExplorerHelper.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, SharedProperties.SelectedItemId).ConfigureAwait(true);
 
             // Use Dispatcher to update the UI
             Dispatcher.Invoke(() =>

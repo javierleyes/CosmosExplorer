@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:CosmosExplorer.UI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Application.Resources>
 </Application>

@@ -3,10 +3,14 @@ using Microsoft.Azure.Cosmos;
 
 namespace CosmosExplorer.UI.Common
 {
-    public class CosmosExplorerHelper
+    public static class CosmosExplorerHelper
     {
-        // TODO: Make this property private and add a method to set it.
-        public static CosmosExplorerCore CosmosExplorerCore { get; set; }
+        private static CosmosExplorerCore CosmosExplorerCore { get; set; }
+
+        public static void Initialize(string connectionString)
+        {
+            CosmosExplorerCore = new CosmosExplorerCore(connectionString);
+        }
 
         public static async Task<List<string>> GetDatabases()
         {
@@ -59,6 +63,11 @@ namespace CosmosExplorer.UI.Common
         {
             Dictionary<string, List<ContainerInformation>> databases = await GetDatabasesInformationAsync().ConfigureAwait(true);
             SharedProperties.DatabaseCollection.LoadDatabases(databases);
+        }
+
+        public static async Task<dynamic> GetItemByIdAsync(string databaseName, string containerName, string itemId)
+        { 
+            return await CosmosExplorerCore.GetItemByIdAsync(databaseName, containerName, itemId).ConfigureAwait(true);
         }
 
         public static async Task LoadItemsAsync(string databaseName, string containerName)
