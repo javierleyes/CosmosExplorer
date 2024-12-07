@@ -4,8 +4,8 @@
         Title="ConnectResourceGroupModal" Height="220" Width="900">
     <Grid>
         <StackPanel Height="200" Width="800" Orientation="Vertical">
-            <TextBox x:Name="ConnectionStringTextBox" Height="100" Width="750" Margin="10" Foreground="Gray" HorizontalAlignment="Left" FontSize="16" AcceptsReturn="True" TextWrapping="Wrap"/>
-            <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" FontSize="18"/>
+            <TextBox x:Name="ConnectionStringTextBox" Height="100" Width="780" Margin="10" Foreground="Gray" HorizontalAlignment="Left" FontSize="16" AcceptsReturn="True" TextWrapping="Wrap"/>
+            <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" FontSize="18" HorizontalAlignment="Right"/>
         </StackPanel>
     </Grid>
 </Window>

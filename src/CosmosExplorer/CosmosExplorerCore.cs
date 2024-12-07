@@ -59,6 +59,8 @@ namespace CosmosExplorer.Core
         /// <returns>A <see cref="FeedIterator{ContainerProperties}"/> to iterate through the containers.</returns>
         public FeedIterator<ContainerProperties> GetContainerIterator(string databaseName)
         {
+            ValidateDatabaseName(databaseName);
+
             Database database = this.cosmosClient.GetDatabase(databaseName);
             return database.GetContainerQueryIterator<ContainerProperties>();
         }
@@ -72,6 +74,10 @@ namespace CosmosExplorer.Core
         /// <returns>A <see cref="FeedIterator{T}"/> to iterate through the query results.</returns>
         public FeedIterator<dynamic> GetQueryIterator(string databaseName, string containerName, string query)
         {
+            ValidateDatabaseName(databaseName);
+            ValidateContainerName(containerName);
+            ValidateQuery(query);
+
             Container containerQuery = this.cosmosClient.GetContainer(databaseName, containerName);
             return containerQuery.GetItemQueryIterator<dynamic>(new QueryDefinition(query));
         }
@@ -81,11 +87,15 @@ namespace CosmosExplorer.Core
         /// </summary>
         /// <param name="databaseName">The name of the database containing the container.</param>
         /// <param name="containerName">The name of the container to retrieve the item from.</param>
-        /// <param name="id">The ID of the item to retrieve.</param>
+        /// <param name="itemId">The ID of the item to retrieve.</param>
         /// <returns>A task representing the asynchronous operation, with a dynamic result containing the retrieved item.</returns>
-        public async Task<dynamic> GetItemByIdAsync(string databaseName, string containerName, string id)
+        public async Task<dynamic> GetItemByIdAsync(string databaseName, string containerName, string itemId)
         {
-            string query = $"SELECT * FROM c WHERE c.id = '{id}'";
+            ValidateDatabaseName(databaseName);
+            ValidateContainerName(containerName);
+            ValidateItemId(itemId);
+
+            string query = $"SELECT * FROM c WHERE c.id = '{itemId}'";
             FeedIterator<dynamic> queryIterator = this.GetQueryIterator(databaseName, containerName, query);
 
             while (queryIterator.HasMoreResults)
@@ -120,13 +130,62 @@ namespace CosmosExplorer.Core
         /// </summary>
         /// <param name="databaseName">The name of the database containing the container.</param>
         /// <param name="containerName">The name of the container to delete the item from.</param>
-        /// <param name="id">The ID of the item to delete.</param>
+        /// <param name="itemId">The ID of the item to delete.</param>
         /// <param name="partitionKey">The partition key for the item.</param>
         /// <returns>A task representing the asynchronous operation, with a dynamic result containing the deleted item.</returns>
-        public async Task<dynamic> DeleteItemAsync(string databaseName, string containerName, string id, string partitionKey)
+        public async Task<dynamic> DeleteItemAsync(string databaseName, string containerName, string itemId, string partitionKey)
         {
+            ValidateDatabaseName(databaseName);
+            ValidateContainerName(containerName);
+            ValidateItemId(itemId);
+            ValidatePartitionKey(partitionKey);
+
             Container container = this.cosmosClient.GetContainer(databaseName, containerName);
-            return await container.DeleteItemAsync<dynamic>(id, new PartitionKey(partitionKey)).ConfigureAwait(false);
+            return await container.DeleteItemAsync<dynamic>(itemId, new PartitionKey(partitionKey)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Validates the database name.
+        /// </summary>
+        /// <param name="databaseName">The name of the database to validate.</param>
+        private static void ValidateDatabaseName(string databaseName) => ValidateParameter(databaseName, nameof(databaseName));
+
+        /// <summary>
+        /// Validates the container name.
+        /// </summary>
+        /// <param name="containerName">The name of the container to validate.</param>
+        private static void ValidateContainerName(string containerName) => ValidateParameter(containerName, nameof(containerName));
+
+        /// <summary>
+        /// Validates the query string.
+        /// </summary>
+        /// <param name="query">The query string to validate.</param>
+        private static void ValidateQuery(string query) => ValidateParameter(query, nameof(query));
+
+        /// <summary>
+        /// Validates the item ID.
+        /// </summary>
+        /// <param name="itemId">The ID of the item to validate.</param>
+        private static void ValidateItemId(string itemId) => ValidateParameter(itemId, nameof(itemId));
+
+        /// <summary>
+        /// Validates the partition key.
+        /// </summary>
+        /// <param name="partitionKey">The partition key to validate.</param>
+        private static void ValidatePartitionKey(string partitionKey) => ValidateParameter(partitionKey, nameof(partitionKey));
+
+        /// <summary>
+        /// Validates a parameter.
+        /// </summary>
+        /// <param name="parameter">The parameter to validate.</param>
+        /// <param name="paramName">The name of the parameter to validate.</param>
+        /// <exception cref="ArgumentException">Thrown when the parameter is null or empty.</exception>
+        private static void ValidateParameter(string parameter, string paramName)
+        {
+            if (string.IsNullOrWhiteSpace(parameter))
+            {
+                throw new ArgumentException($"{paramName} cannot be null or empty.", paramName);
+            }
         }
     }
 }
