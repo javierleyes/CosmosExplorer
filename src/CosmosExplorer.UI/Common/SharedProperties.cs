@@ -70,21 +70,42 @@ namespace CosmosExplorer.UI.Common
             DatabaseCollection.LoadDatabases(databases);
         }
 
-        public static async Task LoadItemsAsync(string databaseName, string containerName)
+        public static async Task LoadItemsAsync()
         {
             ItemListViewCollection.Clear();
 
             string query = "SELECT TOP 10 * FROM c";
             List<Tuple<string, string>> items = new List<Tuple<string, string>>();
 
-            FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(databaseName, containerName, query);
+            FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SelectedDatabase, SelectedContainer, query);
 
             while (iterator.HasMoreResults)
             {
                 FeedResponse<dynamic> response = await iterator.ReadNextAsync().ConfigureAwait(true);
                 foreach (var item in response)
                 {
-                    string partitionKey = ContainerPartitionKey[containerName].TrimStart('/');
+                    string partitionKey = ContainerPartitionKey[SelectedContainer].TrimStart('/');
+                    items.Add(new Tuple<string, string>(item["id"].ToString(), item[partitionKey].ToString()));
+                }
+            }
+
+            ItemListViewCollection.LoadItems(items);
+        }
+
+        public static async Task SearchByQueryAsync(string query)
+        {
+            ItemListViewCollection.Clear();
+
+            List<Tuple<string, string>> items = new List<Tuple<string, string>>();
+
+            FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SelectedDatabase, SelectedContainer, query);
+
+            while (iterator.HasMoreResults)
+            {
+                FeedResponse<dynamic> response = await iterator.ReadNextAsync().ConfigureAwait(true);
+                foreach (var item in response)
+                {
+                    string partitionKey = ContainerPartitionKey[SelectedContainer].TrimStart('/');
                     items.Add(new Tuple<string, string>(item["id"].ToString(), item[partitionKey].ToString()));
                 }
             }
