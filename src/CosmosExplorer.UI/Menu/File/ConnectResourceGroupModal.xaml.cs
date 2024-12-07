@@ -22,8 +22,7 @@ namespace CosmosExplorer.UI
             // Get the MainWindow instance
             if (Application.Current.MainWindow is MainWindow mainWindow)
             {
-                mainWindow.OutputTextBox.Text = "Connected to Cosmos DB.";
-                mainWindow.Actions.IsEnabled = true;
+                mainWindow.FilterPanel.IsEnabled = true;
                 mainWindow.OutputTextBox.IsEnabled = true;
                 mainWindow.LeftPanel.IsEnabled = true;
                 mainWindow.Items.IsEnabled = true;
