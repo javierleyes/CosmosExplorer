@@ -111,6 +111,24 @@ namespace CosmosExplorer.Core
         }
 
         /// <summary>
+        /// Inserts a new item in the specified container within the specified database.
+        /// </summary>
+        /// <param name="databaseName">The name of the database containing the container.</param>
+        /// <param name="containerName">The name of the container to insert the item into.</param>
+        /// <param name="item">The item to insert.</param>
+        /// <param name="partitionKey">The partition key for the item.</param>
+        /// <returns>A task representing the asynchronous operation, with a dynamic result containing the inserted item.</returns>
+        public async Task<dynamic> InsertItemAsync(string databaseName, string containerName, dynamic item, string partitionKey)
+        {
+            ValidateDatabaseName(databaseName);
+            ValidateContainerName(containerName);
+            ValidatePartitionKey(partitionKey);
+
+            Container container = this.cosmosClient.GetContainer(databaseName, containerName);
+            return await container.CreateItemAsync(item, new PartitionKey(partitionKey)).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Upserts an item in the specified container within the specified database.
         /// If the item does not exist, it will be created. If it exists, it will be updated.
         /// </summary>

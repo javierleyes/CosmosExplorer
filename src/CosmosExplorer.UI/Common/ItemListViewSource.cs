@@ -23,5 +23,10 @@ namespace CosmosExplorer.UI.Common
                 this.Add(new ItemListViewSource(item.Item1, item.Item2));
             }
         }
+
+        public void AddItem(string id, string partitionKey)
+        {
+            this.Add(new ItemListViewSource(id, partitionKey));
+        }
     }
 }

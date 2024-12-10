@@ -123,5 +123,11 @@ namespace CosmosExplorer.UI.Common
             // TODO: Validate id and partitionKey.
             await CosmosExplorerCore.DeleteItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, id, partitionKey).ConfigureAwait(true);
         }
+
+        public static async Task SaveItemAsync(dynamic item, string partitionKey)
+        {
+            // TODO: Validate parameters.
+            await CosmosExplorerCore.InsertItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, item, partitionKey).ConfigureAwait(true);
+        }
     }
 }
