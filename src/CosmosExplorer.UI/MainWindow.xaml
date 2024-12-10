@@ -42,11 +42,11 @@
             <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1500" Height="860" Margin="20,0,0,0">
 
                 <StackPanel x:Name="ToolBar" Width="1500" Height="40" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,10">
-                    <Button Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button Content="Discard" Width="100" Click="Discard_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="NewItemButton" Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="SaveButton" Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="UpdateButton" Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="DiscardButton" Content="Discard" Width="100" Click="Discard_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
                     <Button x:Name="DeleteButton" Content="Delete" Width="100" Click="Delete_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
                 </StackPanel>
 
                 <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1500" IsEnabled="False">
@@ -66,13 +66,12 @@
                         </ListView.View>
                     </ListView>
 
-                    <TextBox x:Name="ItemDescriptionTextBox" Width="1080" Height="760" Margin="20,0,0,0" TextWrapping="Wrap" FontSize="16" IsEnabled="False"/>
+                    <TextBox x:Name="ItemDescriptionTextBox" Width="1080" Height="760" Margin="20,0,0,0" TextWrapping="Wrap" FontSize="16" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                 </StackPanel>
 
             </StackPanel>
         </StackPanel>
 
-        <!-- Loader Indicator -->
         <ProgressBar x:Name="LoaderIndicator" Width="200" Height="20" IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>
