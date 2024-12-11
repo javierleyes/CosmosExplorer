@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Icons\Cosmos explorer.ico" />
     <None Remove="Icons\Cosmos-DB.ico" />
   </ItemGroup>
 
@@ -17,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Icons\Cosmos explorer.ico" />
     <Resource Include="Icons\Cosmos-DB.ico" />
   </ItemGroup>
 
