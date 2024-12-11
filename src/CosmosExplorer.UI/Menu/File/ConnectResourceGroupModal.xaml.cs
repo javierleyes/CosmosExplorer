@@ -19,13 +19,13 @@ namespace CosmosExplorer.UI
             CosmosExplorerHelper.Initialize(connectionString);
 
             SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
+            ConnectionStringPanel.Visibility = Visibility.Collapsed;
+            Loader.Visibility = Visibility.Visible;
 
             // Get the MainWindow instance
             if (Application.Current.MainWindow is MainWindow mainWindow)
             {
                 mainWindow.LeftPanel.IsEnabled = true;
-                mainWindow.ItemDescriptionTextBox.IsEnabled = true;
-                mainWindow.Items.IsEnabled = true; // TODO: Remove this line
             }
 
             await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);

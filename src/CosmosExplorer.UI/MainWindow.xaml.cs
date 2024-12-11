@@ -31,6 +31,10 @@ namespace CosmosExplorer.UI
 
             FilterPanel.IsEnabled = false;
 
+            Items.IsEnabled = false;
+            ItemListView.IsEnabled = false;
+            ItemDescriptionTextBox.IsEnabled = false;
+
             ItemDescriptionTextBox.Text = string.Empty;
 
             SharedProperties.ItemListViewCollection.Clear();
@@ -45,6 +49,10 @@ namespace CosmosExplorer.UI
             NewItemButton.IsEnabled = true;
 
             FilterPanel.IsEnabled = true;
+
+            ItemListView.IsEnabled = true;
+            Items.IsEnabled = true;
+            ItemDescriptionTextBox.IsEnabled = true;
 
             ItemDescriptionTextBox.Text = string.Empty;
         }

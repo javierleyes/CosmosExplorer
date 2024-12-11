@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CosmosExplorer.UI"
         Title="Cosmos Explorer (Preview)" Height="1000" Width="1800"
-        Icon="/icons/Cosmos-DB.ico">
+        Icon="/icons/Cosmos-DB.ico"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
@@ -42,17 +43,17 @@
             <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1500" Height="860" Margin="20,0,0,0">
 
                 <StackPanel x:Name="ToolBar" Width="1500" Height="40" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,10">
-                    <Button x:Name="NewItemButton" Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button x:Name="SaveButton" Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
-                    <Button x:Name="UpdateButton" Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button x:Name="DiscardButton" Content="Discard" Width="100" Click="Discard_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
-                    <Button x:Name="DeleteButton" Content="Delete" Width="100" Click="Delete_Click" Height="30" FontSize="18" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="NewItemButton" Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="SaveButton" Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="UpdateButton" Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="DiscardButton" Content="Discard" Width="100" Click="Discard_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="DeleteButton" Content="Delete" Width="100" Click="Delete_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0"/>
                 </StackPanel>
 
                 <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1500" IsEnabled="False">
-                    <TextBox Width="160" Height="30" FontSize="18" Text=" SELECT * FROM c " IsReadOnly="True"/>
-                    <TextBox x:Name="FilterTextBox" Width="1240" Height="30" FontSize="18"/>
-                    <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="18"/>
+                    <TextBox Width="160" Height="30" FontSize="16" Text=" SELECT * FROM c " IsReadOnly="True"/>
+                    <TextBox x:Name="FilterTextBox" Width="1240" Height="30" FontSize="16"/>
+                    <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="16"/>
                 </StackPanel>
 
                 <StackPanel x:Name="Items" Orientation="Horizontal" Width="1500" Height="780" IsEnabled="False" Margin="0,10,0,0">
@@ -71,7 +72,5 @@
 
             </StackPanel>
         </StackPanel>
-
-        <ProgressBar x:Name="LoaderIndicator" Width="200" Height="20" IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>
