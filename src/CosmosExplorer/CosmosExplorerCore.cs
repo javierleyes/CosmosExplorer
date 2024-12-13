@@ -4,7 +4,9 @@
 
 namespace CosmosExplorer.Core
 {
+    using System.Dynamic;
     using Microsoft.Azure.Cosmos;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Cosmos Explorer Core class to interact with Cosmos DB.
@@ -144,6 +146,29 @@ namespace CosmosExplorer.Core
         }
 
         /// <summary>
+        /// Updates an item in the specified container within the specified database.
+        /// </summary>
+        /// <param name="databaseName">The name of the database containing the container.</param>
+        /// <param name="containerName">The name of the container to update the item in.</param>
+        /// <param name="itemId">The ID of the item to update.</param>
+        /// <param name="partitionKey">The partition key for the item.</param>
+        /// <param name="item">The updated item.</param>
+        /// <returns>A task representing the asynchronous operation, with a dynamic result containing the updated item.</returns>
+        public async Task<dynamic> UpdateItemAsync(string databaseName, string containerName, string itemId, string partitionKey, dynamic item)
+        {
+            ValidateDatabaseName(databaseName);
+            ValidateContainerName(containerName);
+            ValidateItemId(itemId);
+            ValidatePartitionKey(partitionKey);
+
+            Container container = this.cosmosClient.GetContainer(databaseName, containerName);
+
+            item = FilterItemProperties(item);
+
+            return await container.ReplaceItemAsync(item, itemId, new PartitionKey(partitionKey)).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Deletes an item from the specified container within the specified database.
         /// </summary>
         /// <param name="databaseName">The name of the database containing the container.</param>
@@ -204,6 +229,33 @@ namespace CosmosExplorer.Core
             {
                 throw new ArgumentException($"{paramName} cannot be null or empty.", paramName);
             }
+        }
+
+        /// <summary>
+        /// Filters out properties starting with "_" from the given item.
+        /// </summary>
+        /// <param name="item">The item to filter.</param>
+        /// <returns>A new item without properties starting with "_".</returns>
+        private static dynamic FilterItemProperties(dynamic item)
+        {
+            // Create a new object without properties starting with "_"
+            ExpandoObject expandoObject = JsonConvert.DeserializeObject<ExpandoObject>(item);
+            IDictionary<string, object> itemDictionary = expandoObject as IDictionary<string, object>;
+            if (itemDictionary != null)
+            {
+                IDictionary<string, object> filteredItem = new ExpandoObject() as IDictionary<string, object>;
+                foreach (KeyValuePair<string, object> kvp in itemDictionary)
+                {
+                    if (!kvp.Key.StartsWith("_"))
+                    {
+                        filteredItem.Add(kvp.Key, kvp.Value);
+                    }
+                }
+
+                return filteredItem;
+            }
+
+            return expandoObject;
         }
     }
 }
