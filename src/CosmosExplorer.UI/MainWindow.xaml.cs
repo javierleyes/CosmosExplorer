@@ -25,6 +25,12 @@ namespace CosmosExplorer.UI
 
         private async void DatabaseTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            SharedProperties.SelectedDatabase = string.Empty;
+            SharedProperties.SelectedContainer = string.Empty;
+            SharedProperties.SelectedItemId = string.Empty;
+            SharedProperties.SelectedItemPartitionKey = string.Empty;
+            SharedProperties.SelectedItemJson = string.Empty;
+
             NewItemButton.IsEnabled = false;
             DeleteButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
