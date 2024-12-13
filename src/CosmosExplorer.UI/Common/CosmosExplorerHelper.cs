@@ -122,12 +122,34 @@ namespace CosmosExplorer.UI.Common
         {
             // TODO: Validate id and partitionKey.
             await CosmosExplorerCore.DeleteItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, id, partitionKey).ConfigureAwait(true);
+
+            SharedProperties.SelectedItemId = string.Empty;
+            SharedProperties.SelectedItemPartitionKey = string.Empty;
+            SharedProperties.SelectedItemJson = string.Empty;
         }
 
         public static async Task SaveItemAsync(dynamic item, string partitionKey)
         {
             // TODO: Validate parameters.
             await CosmosExplorerCore.InsertItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, item, partitionKey).ConfigureAwait(true);
+        }
+
+        public static async Task UpdateItemAsync(string itemId, string partitionKey, dynamic item)
+        { 
+            await CosmosExplorerCore.UpdateItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, itemId, partitionKey, item).ConfigureAwait(true);
+        }
+
+        public static bool IsContentEqual(string original, string current)
+        {
+            string originalHash = GenerateHash(original);
+            string currentHash = GenerateHash(current);
+
+            return originalHash.Equals(currentHash, StringComparison.Ordinal);
+        }
+
+        private static string GenerateHash(string input)
+        {
+            return Utils.GenerateHash(input);
         }
     }
 }

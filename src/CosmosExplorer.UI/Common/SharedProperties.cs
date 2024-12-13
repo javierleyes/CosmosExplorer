@@ -17,5 +17,7 @@
         public static string SelectedItemId { get; set; }
 
         public static string SelectedItemPartitionKey { get; set; }
+
+        public static string SelectedItemJson { get; set; }
     }
 }

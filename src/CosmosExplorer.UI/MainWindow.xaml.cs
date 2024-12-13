@@ -89,7 +89,8 @@ namespace CosmosExplorer.UI
             // Use Dispatcher to update the UI
             Dispatcher.Invoke(() =>
             {
-                ItemDescriptionTextBox.Text = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
+                SharedProperties.SelectedItemJson = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
+                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
             });
         }
 
@@ -143,9 +144,24 @@ namespace CosmosExplorer.UI
             ItemDescriptionTextBox.Text = string.Empty;
         }
 
-        private void Update_Click(object sender, RoutedEventArgs e)
+        private void ItemDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            UpdateButton.IsEnabled = false;
 
+            if (string.IsNullOrEmpty(SharedProperties.SelectedItemJson))
+            {
+                return;
+            }
+
+            UpdateButton.IsEnabled = !CosmosExplorerHelper.IsContentEqual(SharedProperties.SelectedItemJson, ItemDescriptionTextBox.Text);
+        }
+
+
+        private async void Update_Click(object sender, RoutedEventArgs e)
+        {
+            await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, ItemDescriptionTextBox.Text).ConfigureAwait(true);
+            
+            UpdateButton.IsEnabled = false;
         }
 
         private void Discard_Click(object sender, RoutedEventArgs e)
@@ -175,7 +191,9 @@ namespace CosmosExplorer.UI
             await CosmosExplorerHelper.DeleteItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey).ConfigureAwait(true);
 
             SharedProperties.ItemListViewCollection.RemoveAt(ItemListView.SelectedIndex);
+
             ItemDescriptionTextBox.Text = string.Empty;
+            UpdateButton.IsEnabled = false;
         }
 
         private async void Save_Click(object sender, RoutedEventArgs e)
