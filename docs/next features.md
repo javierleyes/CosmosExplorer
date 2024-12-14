@@ -1,7 +1,7 @@
 # Next features:
 
-* Implement discard on edit item
 * Show confirmation modal before to delete
+* Adjust sizes
 
 * Create container
 * Delete container

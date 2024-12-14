@@ -10,6 +10,10 @@
 
         public static LoaderIndicator LoaderIndicator { get; set; }
 
+        public static bool IsEditMode { get; set; } = false;
+
+        public static bool IsCreatingItem { get; set; } = false;
+
         public static string SelectedDatabase { get; set; }
 
         public static string SelectedContainer { get; set; }
