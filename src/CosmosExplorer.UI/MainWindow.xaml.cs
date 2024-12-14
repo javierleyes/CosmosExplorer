@@ -1,4 +1,5 @@
 ﻿using CosmosExplorer.UI.Common;
+using CosmosExplorer.UI.Modal;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -236,6 +237,15 @@ namespace CosmosExplorer.UI
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
+            // Show the confirmation modal.
+            ConfirmationModal confirmationModal = new ConfirmationModal();
+            bool? confirmationResult = confirmationModal.ShowDialog();
+
+            if (confirmationResult is false)
+            {
+                return;
+            }
+
             await CosmosExplorerHelper.DeleteItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey).ConfigureAwait(true);
 
             SharedProperties.ItemListViewCollection.RemoveAt(ItemListView.SelectedIndex);
