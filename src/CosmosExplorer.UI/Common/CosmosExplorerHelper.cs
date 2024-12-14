@@ -66,7 +66,7 @@ namespace CosmosExplorer.UI.Common
         }
 
         public static async Task<dynamic> GetItemByIdAsync(string databaseName, string containerName, string itemId)
-        { 
+        {
             return await CosmosExplorerCore.GetItemByIdAsync(databaseName, containerName, itemId).ConfigureAwait(true);
         }
 
@@ -135,16 +135,16 @@ namespace CosmosExplorer.UI.Common
         }
 
         public static async Task UpdateItemAsync(string itemId, string partitionKey, dynamic item)
-        { 
+        {
             await CosmosExplorerCore.UpdateItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, itemId, partitionKey, item).ConfigureAwait(true);
         }
 
-        public static bool IsContentEqual(string original, string current)
+        public static void SetEditMode(string original, string current)
         {
             string originalHash = GenerateHash(original);
             string currentHash = GenerateHash(current);
 
-            return originalHash.Equals(currentHash, StringComparison.Ordinal);
+            SharedProperties.IsEditMode = !originalHash.Equals(currentHash, StringComparison.Ordinal);
         }
 
         private static string GenerateHash(string input)

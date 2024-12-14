@@ -32,8 +32,8 @@ namespace CosmosExplorer.UI
             SharedProperties.SelectedItemJson = string.Empty;
 
             NewItemButton.IsEnabled = false;
-            DeleteButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
+            DeleteButton.IsEnabled = false;
 
             FilterPanel.IsEnabled = false;
 
@@ -66,6 +66,9 @@ namespace CosmosExplorer.UI
         private async void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             DeleteButton.IsEnabled = false;
+            
+            DiscardButton.IsEnabled = false;
+            DiscardButton.Visibility = Visibility.Collapsed;
 
             var selectedItem = ItemListView.SelectedItem;
             if (selectedItem is null)
@@ -147,27 +150,51 @@ namespace CosmosExplorer.UI
 
             ItemListView.IsEnabled = false;
 
+            SharedProperties.SelectedItemId = string.Empty;
+            SharedProperties.SelectedItemPartitionKey = string.Empty;
+            SharedProperties.SelectedItemJson = string.Empty;
+
+            SharedProperties.IsCreatingItem = true;
+
+            // Important this should be the last line!!!
             ItemDescriptionTextBox.Text = string.Empty;
         }
 
         private void ItemDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UpdateButton.IsEnabled = false;
-
-            if (string.IsNullOrEmpty(SharedProperties.SelectedItemJson))
+            if (SharedProperties.IsCreatingItem)
             {
+                DiscardButton.IsEnabled = true;
+                DiscardButton.Visibility = Visibility.Visible;
+
                 return;
             }
 
-            UpdateButton.IsEnabled = !CosmosExplorerHelper.IsContentEqual(SharedProperties.SelectedItemJson, ItemDescriptionTextBox.Text);
-        }
+            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, ItemDescriptionTextBox.Text);
 
+            if (SharedProperties.IsEditMode)
+            {
+                UpdateButton.IsEnabled = true;
+
+                DiscardButton.IsEnabled = true;
+                DiscardButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                UpdateButton.IsEnabled = false;
+
+                DiscardButton.IsEnabled = false;
+                DiscardButton.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
             await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, ItemDescriptionTextBox.Text).ConfigureAwait(true);
-            
+
             UpdateButton.IsEnabled = false;
+
+            SharedProperties.IsEditMode = false;
         }
 
         private void Discard_Click(object sender, RoutedEventArgs e)
@@ -185,11 +212,26 @@ namespace CosmosExplorer.UI
             UpdateButton.IsEnabled = false;
 
             DeleteButton.Visibility = Visibility.Visible;
-            DeleteButton.IsEnabled = false;
 
             FilterPanel.IsEnabled = true;
 
             ItemListView.IsEnabled = true;
+
+            if (SharedProperties.IsEditMode)
+            {
+                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
+                DeleteButton.IsEnabled = true;
+
+                SharedProperties.IsEditMode = false;
+            }
+            
+            if(SharedProperties.IsCreatingItem)
+            {
+                ItemDescriptionTextBox.Text = string.Empty;
+                DeleteButton.IsEnabled = false;
+
+                SharedProperties.IsCreatingItem = false;
+            }
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
@@ -249,6 +291,8 @@ namespace CosmosExplorer.UI
             FilterPanel.IsEnabled = true;
 
             ItemListView.IsEnabled = true;
+
+            SharedProperties.IsCreatingItem = false;
         }
     }
 }
