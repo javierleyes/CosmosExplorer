@@ -1,7 +1,7 @@
 ﻿<Window x:Class="CosmosExplorer.UI.ConnectResourceGroupModal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Enter the connection string" Width="900" Height="260">
+        Title="Enter the connection string" WindowStartupLocation="CenterScreen" Width="900" Height="260" ResizeMode="NoResize">
     <Grid>
         <StackPanel x:Name="ConnectionStringPanel" Height="220" Width="800" Orientation="Vertical">
             <Label Content="Account endpoint" FontSize="16" HorizontalAlignment="Left"/>
