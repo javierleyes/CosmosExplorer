@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CosmosExplorer.UI.Modal"
         mc:Ignorable="d"
-        Title="Confirm delete" Height="150" Width="400"
-        WindowStartupLocation="CenterScreen">
+        Title="Confirm delete" Height="150" Width="700"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <TextBlock Text="Are you sure you want to delete the selected item?" 
                    HorizontalAlignment="Center" VerticalAlignment="Center" 

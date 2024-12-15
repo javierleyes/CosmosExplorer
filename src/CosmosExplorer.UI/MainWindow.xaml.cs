@@ -157,6 +157,8 @@ namespace CosmosExplorer.UI
 
             SharedProperties.IsCreatingItem = true;
 
+            DatabaseTreeView.IsEnabled = false;
+
             // Important this should be the last line!!!
             ItemDescriptionTextBox.Text = string.Empty;
         }
@@ -175,6 +177,10 @@ namespace CosmosExplorer.UI
 
             if (SharedProperties.IsEditMode)
             {
+                DatabaseTreeView.IsEnabled = false;
+                ItemListView.IsEnabled = false;
+                FilterPanel.IsEnabled = false;
+
                 UpdateButton.IsEnabled = true;
 
                 DiscardButton.IsEnabled = true;
@@ -196,6 +202,10 @@ namespace CosmosExplorer.UI
             UpdateButton.IsEnabled = false;
 
             SharedProperties.IsEditMode = false;
+
+            DatabaseTreeView.IsEnabled = true;
+            ItemListView.IsEnabled = true;
+            FilterPanel.IsEnabled = true;
         }
 
         private void Discard_Click(object sender, RoutedEventArgs e)
@@ -216,6 +226,7 @@ namespace CosmosExplorer.UI
 
             FilterPanel.IsEnabled = true;
 
+            DatabaseTreeView.IsEnabled = true;
             ItemListView.IsEnabled = true;
 
             if (SharedProperties.IsEditMode)
@@ -224,6 +235,8 @@ namespace CosmosExplorer.UI
                 DeleteButton.IsEnabled = true;
 
                 SharedProperties.IsEditMode = false;
+
+                FilterPanel.IsEnabled = true;
             }
             
             if(SharedProperties.IsCreatingItem)
@@ -303,6 +316,8 @@ namespace CosmosExplorer.UI
             ItemListView.IsEnabled = true;
 
             SharedProperties.IsCreatingItem = false;
+
+            DatabaseTreeView.IsEnabled = true;
         }
     }
 }
