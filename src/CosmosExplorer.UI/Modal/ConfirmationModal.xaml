@@ -10,7 +10,7 @@
     <Grid>
         <TextBlock Text="Are you sure you want to delete the selected item?" 
                    HorizontalAlignment="Center" VerticalAlignment="Center" 
-                   Margin="0,0,0,40" FontSize="16"/>
+                   Margin="0,0,0,40" FontSize="14"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
             <Button Content="Delete" Width="100" Margin="10" Click="Delete_Click"/>
             <Button Content="Cancel" Width="100" Margin="10" Click="Cancel_Click"/>
