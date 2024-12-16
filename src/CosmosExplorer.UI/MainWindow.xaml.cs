@@ -181,6 +181,12 @@ namespace CosmosExplorer.UI
                 ItemListView.IsEnabled = false;
                 FilterPanel.IsEnabled = false;
 
+                NewItemButton.IsEnabled = false;
+                NewItemButton.Visibility = Visibility.Collapsed;
+
+                DeleteButton.IsEnabled = false;
+                DeleteButton.Visibility = Visibility.Collapsed;
+
                 UpdateButton.IsEnabled = true;
 
                 DiscardButton.IsEnabled = true;
@@ -189,6 +195,12 @@ namespace CosmosExplorer.UI
             else
             {
                 UpdateButton.IsEnabled = false;
+
+                NewItemButton.IsEnabled = true;
+                NewItemButton.Visibility = Visibility.Visible;
+
+                DeleteButton.IsEnabled = true;
+                DeleteButton.Visibility = Visibility.Visible;
 
                 DiscardButton.IsEnabled = false;
                 DiscardButton.Visibility = Visibility.Collapsed;
@@ -205,6 +217,12 @@ namespace CosmosExplorer.UI
             DiscardButton.Visibility = Visibility.Collapsed;
 
             SharedProperties.IsEditMode = false;
+
+            NewItemButton.IsEnabled = true;
+            NewItemButton.Visibility = Visibility.Visible;
+
+            DeleteButton.IsEnabled = true;
+            DeleteButton.Visibility = Visibility.Visible;
 
             DatabaseTreeView.IsEnabled = true;
             ItemListView.IsEnabled = true;
@@ -234,12 +252,11 @@ namespace CosmosExplorer.UI
 
             if (SharedProperties.IsEditMode)
             {
-                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
-                DeleteButton.IsEnabled = true;
-
                 SharedProperties.IsEditMode = false;
 
                 FilterPanel.IsEnabled = true;
+
+                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
             }
             
             if(SharedProperties.IsCreatingItem)
