@@ -1,5 +1,6 @@
 ﻿using CosmosExplorer.Core;
 using Microsoft.Azure.Cosmos;
+using System.Windows;
 
 namespace CosmosExplorer.UI.Common
 {
@@ -9,7 +10,14 @@ namespace CosmosExplorer.UI.Common
 
         public static void Initialize(string connectionString)
         {
-            CosmosExplorerCore = new CosmosExplorerCore(connectionString);
+            try
+            {
+                CosmosExplorerCore = new CosmosExplorerCore(connectionString);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception($"Error initializing CosmosExplorerCore: {ex.Message}");
+            }
         }
 
         public static async Task<List<string>> GetDatabases()
@@ -31,7 +39,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error retrieving databases: {ex.Message}");
+                MessageBox.Show("An error occurred while retrieving databases.", "Get databases error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return databaseNames;
@@ -67,7 +75,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error retrieving database information: {ex.Message}");
+                MessageBox.Show("An error occurred while retrieving database information.", "Retrieving database information", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return databases;
@@ -82,7 +90,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error loading databases: {ex.Message}");
+                MessageBox.Show("An error occurred while loading databases.", "Load databases", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -94,7 +102,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error retrieving item by ID: {ex.Message}");
+                MessageBox.Show("An error occurred while retrieving item.", "Retrieving item", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
@@ -127,7 +135,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error loading items: {ex.Message}");
+                MessageBox.Show("An error occurred while loading items.", "Loading items", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -155,7 +163,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error searching by query: {ex.Message}");
+                MessageBox.Show("An error occurred while searching by query.", "Searching by query", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -171,7 +179,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Error deleting item: {ex.Message}");
+                MessageBox.Show("An error occurred while deleting item.", "Deleting item", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -183,8 +191,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                // Log the exception or handle it as needed
-                Console.WriteLine($"Error saving item: {ex.Message}");
+                MessageBox.Show("An error occurred while saving item.", "Saving item", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -196,8 +203,7 @@ namespace CosmosExplorer.UI.Common
             }
             catch (InvalidOperationException ex)
             {
-                // Log the exception or handle it as needed
-                Console.WriteLine($"Error updating item: {ex.Message}");
+                MessageBox.Show("An error occurred while updating item.", "Updating item", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
