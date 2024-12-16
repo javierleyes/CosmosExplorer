@@ -14,7 +14,7 @@ namespace CosmosExplorer.UI.Common
             {
                 CosmosExplorerCore = new CosmosExplorerCore(connectionString);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Error initializing CosmosExplorerCore: {ex.Message}");
             }
@@ -37,7 +37,7 @@ namespace CosmosExplorer.UI.Common
                     }
                 }
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while retrieving databases.", "Get databases error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -73,7 +73,7 @@ namespace CosmosExplorer.UI.Common
                     databases.Add(database, containers);
                 }
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while retrieving database information.", "Retrieving database information", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -88,7 +88,7 @@ namespace CosmosExplorer.UI.Common
                 Dictionary<string, List<ContainerInformation>> databases = await GetDatabasesInformationAsync().ConfigureAwait(true);
                 SharedProperties.DatabaseCollection.LoadDatabases(databases);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while loading databases.", "Load databases", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -100,7 +100,7 @@ namespace CosmosExplorer.UI.Common
             {
                 return await CosmosExplorerCore.GetItemByIdAsync(databaseName, containerName, itemId).ConfigureAwait(true);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while retrieving item.", "Retrieving item", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
@@ -133,7 +133,7 @@ namespace CosmosExplorer.UI.Common
 
                 SharedProperties.ItemListViewCollection.LoadItems(items);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while loading items.", "Loading items", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -161,13 +161,13 @@ namespace CosmosExplorer.UI.Common
 
                 SharedProperties.ItemListViewCollection.LoadItems(items);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while searching by query.", "Searching by query", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public static async Task DeleteItemAsync(string id, string partitionKey)
+        public static async Task<bool> DeleteItemAsync(string id, string partitionKey)
         {
             try
             {
@@ -176,10 +176,13 @@ namespace CosmosExplorer.UI.Common
                 SharedProperties.SelectedItemId = string.Empty;
                 SharedProperties.SelectedItemPartitionKey = string.Empty;
                 SharedProperties.SelectedItemJson = string.Empty;
+
+                return true;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while deleting item.", "Deleting item", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 
@@ -189,21 +192,23 @@ namespace CosmosExplorer.UI.Common
             {
                 await CosmosExplorerCore.InsertItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, item, partitionKey).ConfigureAwait(true);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while saving item.", "Saving item", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public static async Task UpdateItemAsync(string itemId, string partitionKey, dynamic item)
+        public static async Task<bool> UpdateItemAsync(string itemId, string partitionKey, dynamic item)
         {
             try
             {
                 await CosmosExplorerCore.UpdateItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, itemId, partitionKey, item).ConfigureAwait(true);
+                return true;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while updating item.", "Updating item", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 

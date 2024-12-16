@@ -122,47 +122,6 @@ namespace CosmosExplorer.UI
             aboutWindow.ShowDialog();
         }
 
-        private async void FilterButton_Click(object sender, RoutedEventArgs e)
-        {
-            ItemDescriptionTextBox.Text = string.Empty;
-
-            // TODO: Validate query.
-            await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
-        }
-
-        private void NewItem_Click(object sender, RoutedEventArgs e)
-        {
-            SaveButton.Visibility = Visibility.Visible;
-            SaveButton.IsEnabled = true;
-
-            DiscardButton.Visibility = Visibility.Visible;
-            DiscardButton.IsEnabled = true;
-
-            NewItemButton.Visibility = Visibility.Collapsed;
-            NewItemButton.IsEnabled = false;
-
-            UpdateButton.Visibility = Visibility.Collapsed;
-            UpdateButton.IsEnabled = false;
-
-            DeleteButton.Visibility = Visibility.Collapsed;
-            DeleteButton.IsEnabled = false;
-
-            FilterPanel.IsEnabled = false;
-
-            ItemListView.IsEnabled = false;
-
-            SharedProperties.SelectedItemId = string.Empty;
-            SharedProperties.SelectedItemPartitionKey = string.Empty;
-            SharedProperties.SelectedItemJson = string.Empty;
-
-            SharedProperties.IsCreatingItem = true;
-
-            DatabaseTreeView.IsEnabled = false;
-
-            // Important this should be the last line!!!
-            ItemDescriptionTextBox.Text = string.Empty;
-        }
-
         private void ItemDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SharedProperties.IsCreatingItem)
@@ -207,9 +166,55 @@ namespace CosmosExplorer.UI
             }
         }
 
+        private async void FilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            ItemDescriptionTextBox.Text = string.Empty;
+
+            // TODO: Validate query.
+            await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+        }
+
+        private void NewItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveButton.Visibility = Visibility.Visible;
+            SaveButton.IsEnabled = true;
+
+            DiscardButton.Visibility = Visibility.Visible;
+            DiscardButton.IsEnabled = true;
+
+            NewItemButton.Visibility = Visibility.Collapsed;
+            NewItemButton.IsEnabled = false;
+
+            UpdateButton.Visibility = Visibility.Collapsed;
+            UpdateButton.IsEnabled = false;
+
+            DeleteButton.Visibility = Visibility.Collapsed;
+            DeleteButton.IsEnabled = false;
+
+            FilterPanel.IsEnabled = false;
+
+            ItemListView.IsEnabled = false;
+
+            SharedProperties.SelectedItemId = string.Empty;
+            SharedProperties.SelectedItemPartitionKey = string.Empty;
+            SharedProperties.SelectedItemJson = string.Empty;
+
+            SharedProperties.IsCreatingItem = true;
+
+            DatabaseTreeView.IsEnabled = false;
+
+            // Important this should be the last line!!!
+            ItemDescriptionTextBox.Text = string.Empty;
+        }
+
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
-            await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, ItemDescriptionTextBox.Text).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, ItemDescriptionTextBox.Text).ConfigureAwait(true);
+
+            if (!result)
+            {
+                return;
+            }
 
             UpdateButton.IsEnabled = false;
 
@@ -279,7 +284,12 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            await CosmosExplorerHelper.DeleteItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.DeleteItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey).ConfigureAwait(true);
+
+            if (!result)
+            {
+                return;
+            }
 
             SharedProperties.ItemListViewCollection.RemoveAt(ItemListView.SelectedIndex);
 
