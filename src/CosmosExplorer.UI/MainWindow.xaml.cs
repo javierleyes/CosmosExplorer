@@ -201,6 +201,9 @@ namespace CosmosExplorer.UI
 
             UpdateButton.IsEnabled = false;
 
+            DiscardButton.IsEnabled = false;
+            DiscardButton.Visibility = Visibility.Collapsed;
+
             SharedProperties.IsEditMode = false;
 
             DatabaseTreeView.IsEnabled = true;

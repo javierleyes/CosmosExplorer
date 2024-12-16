@@ -19,6 +19,11 @@ namespace CosmosExplorer.Core
         /// <returns>A hexadecimal string representation of the SHA-256 hash.</returns>
         public static string GenerateHash(string input)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                return string.Empty;
+            }
+
             using (SHA256 sha256 = SHA256.Create())
             {
                 // Convert the input string to a byte array and compute the hash

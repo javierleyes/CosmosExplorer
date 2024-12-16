@@ -131,7 +131,7 @@ internal class Program
 
         dynamic item = Newtonsoft.Json.JsonConvert.DeserializeObject(itemJson);
 
-        dynamic createdItem = await cosmosExplorerHelper.UpsertItemAsync(databaseName, containerName, item, partitionKey);
+        dynamic createdItem = await cosmosExplorerHelper.InsertItemAsync(databaseName, containerName, item, partitionKey);
 
         Console.WriteLine($"Created item: {createdItem}");
     }

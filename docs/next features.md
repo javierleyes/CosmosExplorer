@@ -1,6 +1,5 @@
 # Next features:
 
-* Show confirmation modal before to delete
 * Adjust sizes
 
 * Create container

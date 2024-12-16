@@ -15,25 +15,34 @@ namespace CosmosExplorer.UI
 
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
-            string connectionString = ConnectionStringTextBox.Text;
-            CosmosExplorerHelper.Initialize(connectionString);
-
-            SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
-            ConnectionStringPanel.Visibility = Visibility.Collapsed;
-            Loader.Visibility = Visibility.Visible;
-
-            // Get the MainWindow instance
-            if (Application.Current.MainWindow is MainWindow mainWindow)
+            try
             {
-                mainWindow.LeftPanel.IsEnabled = true;
+                string connectionString = ConnectionStringTextBox.Text;
+                CosmosExplorerHelper.Initialize(connectionString);
+
+                SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
+                ConnectionStringPanel.Visibility = Visibility.Collapsed;
+                Loader.Visibility = Visibility.Visible;
+
+                // Get the MainWindow instance
+                if (Application.Current.MainWindow is MainWindow mainWindow)
+                {
+                    mainWindow.LeftPanel.IsEnabled = true;
+                }
+
+                await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
+
+                // Close the modal
+                this.Close();
             }
-
-            await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
-
-            // Close the modal
-            this.Close();
-
-            SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while connecting to the resource group. Please check your connection details and try again.", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
+            }
         }
     }
 }

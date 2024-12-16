@@ -25,13 +25,13 @@
                         <HierarchicalDataTemplate DataType="{x:Type local:DatabaseTreeSource}" ItemsSource="{Binding Containers}">
                             <StackPanel Orientation="Horizontal" Margin="0,0,8,8">
                                 <Image Source="/Icons/Cosmos explorer.ico" Width="16" Height="16" />
-                                <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="16" />
+                                <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="14" />
                             </StackPanel>
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <DataTemplate DataType="{x:Type local:ContainerTreeSource}">
                                     <StackPanel Orientation="Horizontal" Margin="0,0,8,8">
                                         <Image Source="/icons/Container.ico" Width="16" Height="16" />
-                                        <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="16" />
+                                        <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="14" />
                                     </StackPanel>
                                 </DataTemplate>
                             </HierarchicalDataTemplate.ItemTemplate>
@@ -43,17 +43,17 @@
             <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1500" Height="860" Margin="20,0,0,0">
 
                 <StackPanel x:Name="ToolBar" Width="1500" Height="40" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,10">
-                    <Button x:Name="NewItemButton" Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button x:Name="SaveButton" Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
-                    <Button x:Name="UpdateButton" Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0"/>
-                    <Button x:Name="DiscardButton" Content="Discard" Width="100" Click="Discard_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
-                    <Button x:Name="DeleteButton" Content="Delete" Width="100" Click="Delete_Click" Height="30" FontSize="16" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="NewItemButton" Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="SaveButton" Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="UpdateButton" Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0"/>
+                    <Button x:Name="DiscardButton" Content="Discard" Width="100" Click="Discard_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="DeleteButton" Content="Delete" Width="100" Click="Delete_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0"/>
                 </StackPanel>
 
                 <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1500" IsEnabled="False">
-                    <TextBox Width="160" Height="30" FontSize="16" Text=" SELECT * FROM c " IsReadOnly="True"/>
-                    <TextBox x:Name="FilterTextBox" Width="1240" Height="30" FontSize="16"/>
-                    <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="16"/>
+                    <TextBox Width="160" Height="30" FontSize="14" Text=" SELECT * FROM c " IsReadOnly="True"/>
+                    <TextBox x:Name="FilterTextBox" Width="1240" Height="30" FontSize="14"/>
+                    <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="14"/>
                 </StackPanel>
 
                 <StackPanel x:Name="Items" Orientation="Horizontal" Width="1500" Height="780" IsEnabled="False" Margin="0,10,0,0">
@@ -67,7 +67,7 @@
                         </ListView.View>
                     </ListView>
 
-                    <TextBox x:Name="ItemDescriptionTextBox" Width="1080" Height="760" Margin="20,0,0,0" TextWrapping="Wrap" FontSize="16" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="ItemDescriptionTextBox_TextChanged"/>
+                    <TextBox x:Name="ItemDescriptionTextBox" Width="1080" Height="760" Margin="20,0,0,0" TextWrapping="Wrap" FontSize="14" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="ItemDescriptionTextBox_TextChanged"/>
                 </StackPanel>
 
             </StackPanel>
