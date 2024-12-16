@@ -51,8 +51,8 @@
                 </StackPanel>
 
                 <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1500" IsEnabled="False">
-                    <TextBox Width="160" Height="30" FontSize="14" Text=" SELECT * FROM c " IsReadOnly="True"/>
-                    <TextBox x:Name="FilterTextBox" Width="1240" Height="30" FontSize="14"/>
+                    <TextBox Width="140" Height="30" FontSize="14" Text=" SELECT * FROM c " IsReadOnly="True" VerticalAlignment="Center"/>
+                    <TextBox x:Name="FilterTextBox" Width="1260" Height="30" FontSize="14"/>
                     <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="14"/>
                 </StackPanel>
 
