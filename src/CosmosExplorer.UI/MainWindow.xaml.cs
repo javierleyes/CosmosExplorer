@@ -1,7 +1,10 @@
 ﻿using CosmosExplorer.UI.Common;
 using CosmosExplorer.UI.Modal;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace CosmosExplorer.UI
 {
@@ -40,9 +43,9 @@ namespace CosmosExplorer.UI
 
             Items.IsEnabled = false;
             ItemListView.IsEnabled = false;
-            ItemDescriptionTextBox.IsEnabled = false;
+            ItemDescriptionRichTextBox.IsEnabled = false;
 
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
 
             SharedProperties.ItemListViewCollection.Clear();
 
@@ -59,15 +62,15 @@ namespace CosmosExplorer.UI
 
             ItemListView.IsEnabled = true;
             Items.IsEnabled = true;
-            ItemDescriptionTextBox.IsEnabled = true;
+            ItemDescriptionRichTextBox.IsEnabled = true;
 
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
         }
 
         private async void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             DeleteButton.IsEnabled = false;
-            
+
             DiscardButton.IsEnabled = false;
             DiscardButton.Visibility = Visibility.Collapsed;
 
@@ -100,7 +103,7 @@ namespace CosmosExplorer.UI
             Dispatcher.Invoke(() =>
             {
                 SharedProperties.SelectedItemJson = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
-                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
+                DisplayJson(SharedProperties.SelectedItemJson);
             });
         }
 
@@ -122,8 +125,10 @@ namespace CosmosExplorer.UI
             aboutWindow.ShowDialog();
         }
 
-        private void ItemDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ItemDescriptionRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
             if (SharedProperties.IsCreatingItem)
             {
                 DiscardButton.IsEnabled = true;
@@ -132,7 +137,7 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, ItemDescriptionTextBox.Text);
+            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, textRange.Text);
 
             if (SharedProperties.IsEditMode)
             {
@@ -168,7 +173,7 @@ namespace CosmosExplorer.UI
 
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
 
             // TODO: Validate query.
             await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
@@ -204,12 +209,14 @@ namespace CosmosExplorer.UI
             DatabaseTreeView.IsEnabled = false;
 
             // Important this should be the last line!!!
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
         }
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
-            bool result = await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, ItemDescriptionTextBox.Text).ConfigureAwait(true);
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
+            bool result = await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, textRange.Text).ConfigureAwait(true);
 
             if (!result)
             {
@@ -261,12 +268,13 @@ namespace CosmosExplorer.UI
 
                 FilterPanel.IsEnabled = true;
 
-                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
+                DisplayJson(SharedProperties.SelectedItemJson);
             }
-            
-            if(SharedProperties.IsCreatingItem)
+
+            if (SharedProperties.IsCreatingItem)
             {
-                ItemDescriptionTextBox.Text = string.Empty;
+                DisplayJson(string.Empty);
+
                 DeleteButton.IsEnabled = false;
 
                 SharedProperties.IsCreatingItem = false;
@@ -293,13 +301,17 @@ namespace CosmosExplorer.UI
 
             SharedProperties.ItemListViewCollection.RemoveAt(ItemListView.SelectedIndex);
 
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
+
             UpdateButton.IsEnabled = false;
         }
-
+        
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            string newItem = ItemDescriptionTextBox.Text;
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
+            string newItem = textRange.Text;
+
             if (string.IsNullOrWhiteSpace(newItem))
             {
                 MessageBox.Show("Item description cannot be empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -349,5 +361,63 @@ namespace CosmosExplorer.UI
 
             DatabaseTreeView.IsEnabled = true;
         }
+
+        private void DisplayJson(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                ItemDescriptionRichTextBox.Document.Blocks.Clear();
+                return;
+            }
+
+            Paragraph paragraph = new Paragraph();
+            var jsonObject = JObject.Parse(json);
+
+            AddJsonToken(paragraph, jsonObject, 0);
+
+            ItemDescriptionRichTextBox.Document.Blocks.Clear();
+            ItemDescriptionRichTextBox.Document.Blocks.Add(paragraph);
+        }
+
+        private void AddJsonToken(Paragraph paragraph, JToken token, int indentLevel, bool isLast = false)
+        {
+            string indent = new string(' ', indentLevel * 2);
+
+            if (token is JProperty property)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\": ") { Foreground = Brushes.Maroon });
+                AddJsonToken(paragraph, property.Value, indentLevel, true);
+            }
+            else if (token is JObject obj)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}{{\n"));
+                var children = obj.Children().ToList();
+                for (int i = 0; i < children.Count; i++)
+                {
+                    AddJsonToken(paragraph, children[i], indentLevel + 1, i == children.Count - 1);
+                }
+                paragraph.Inlines.Add(new Run($"{indent}}}{(isLast ? "" : ",")}\n"));
+            }
+            else if (token is JArray array)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}[\n"));
+                for (int i = 0; i < array.Count(); i++)
+                {
+                    AddJsonToken(paragraph, array[i], indentLevel + 1, i == array.Count() - 1);
+                }
+                paragraph.Inlines.Add(new Run($"{indent}]{(isLast ? "" : ",")}\n"));
+            }
+            else if (token.Type == JTokenType.String)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run("\n"));
+            }
+            else
+            {
+                paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run("\n"));
+            }
+        }
+
     }
 }

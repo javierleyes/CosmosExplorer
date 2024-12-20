@@ -68,7 +68,7 @@
                         </ListView.View>
                     </ListView>
 
-                    <TextBox x:Name="ItemDescriptionTextBox" Width="910" Height="760" Margin="10,0,0,0" TextWrapping="Wrap" FontSize="14" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="ItemDescriptionTextBox_TextChanged"/>
+                    <RichTextBox x:Name="ItemDescriptionRichTextBox" Width="910" Height="760" Margin="10,0,0,0" FontSize="14" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="ItemDescriptionRichTextBox_TextChanged" />
                 </StackPanel>
 
             </StackPanel>
