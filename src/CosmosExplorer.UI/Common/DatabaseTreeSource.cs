@@ -41,6 +41,8 @@ namespace CosmosExplorer.UI
     {
         public void LoadDatabases(Dictionary<string, List<ContainerInformation>> databases)
         {
+            this.Clear();
+
             foreach (string database in databases.Keys)
             {
                 this.Add(new DatabaseTreeSource (database, databases[database]));
