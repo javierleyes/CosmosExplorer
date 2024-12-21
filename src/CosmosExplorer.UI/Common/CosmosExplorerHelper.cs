@@ -175,7 +175,7 @@ namespace CosmosExplorer.UI.Common
 
                 SharedProperties.SelectedItemId = string.Empty;
                 SharedProperties.SelectedItemPartitionKey = string.Empty;
-                SharedProperties.SelectedItemJson = string.Empty;
+                SharedProperties.SelectedItemJson = null;
 
                 return true;
             }

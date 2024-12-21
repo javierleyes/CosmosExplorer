@@ -22,6 +22,6 @@
 
         public static string SelectedItemPartitionKey { get; set; }
 
-        public static string SelectedItemJson { get; set; }
+        public static string? SelectedItemJson { get; set; } = null;
     }
 }

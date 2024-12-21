@@ -33,7 +33,7 @@ namespace CosmosExplorer.UI
             SharedProperties.SelectedContainer = string.Empty;
             SharedProperties.SelectedItemId = string.Empty;
             SharedProperties.SelectedItemPartitionKey = string.Empty;
-            SharedProperties.SelectedItemJson = string.Empty;
+            SharedProperties.SelectedItemJson = null;
 
             NewItemButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
@@ -44,8 +44,6 @@ namespace CosmosExplorer.UI
             Items.IsEnabled = false;
             ItemListView.IsEnabled = false;
             ItemDescriptionRichTextBox.IsEnabled = false;
-
-            DisplayJson(string.Empty);
 
             SharedProperties.ItemListViewCollection.Clear();
 
@@ -94,6 +92,7 @@ namespace CosmosExplorer.UI
 
             SharedProperties.SelectedItemId = itemId;
             SharedProperties.SelectedItemPartitionKey = partitionKey;
+            SharedProperties.SelectedItemJson = null;
 
             DeleteButton.IsEnabled = true;
 
@@ -102,8 +101,11 @@ namespace CosmosExplorer.UI
             // Use Dispatcher to update the UI
             Dispatcher.Invoke(() =>
             {
-                SharedProperties.SelectedItemJson = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
-                DisplayJson(SharedProperties.SelectedItemJson);
+                string jsonFromBackend = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
+                DisplayJson(jsonFromBackend);
+
+                TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+                SharedProperties.SelectedItemJson = textRange.Text;
             });
         }
 
@@ -134,6 +136,11 @@ namespace CosmosExplorer.UI
                 DiscardButton.IsEnabled = true;
                 DiscardButton.Visibility = Visibility.Visible;
 
+                return;
+            }
+
+            if (SharedProperties.SelectedItemJson is null)
+            {
                 return;
             }
 
@@ -175,7 +182,6 @@ namespace CosmosExplorer.UI
         {
             DisplayJson(string.Empty);
 
-            // TODO: Validate query.
             await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
         }
 
@@ -202,7 +208,7 @@ namespace CosmosExplorer.UI
 
             SharedProperties.SelectedItemId = string.Empty;
             SharedProperties.SelectedItemPartitionKey = string.Empty;
-            SharedProperties.SelectedItemJson = string.Empty;
+            SharedProperties.SelectedItemJson = null;
 
             SharedProperties.IsCreatingItem = true;
 
@@ -229,6 +235,7 @@ namespace CosmosExplorer.UI
             DiscardButton.Visibility = Visibility.Collapsed;
 
             SharedProperties.IsEditMode = false;
+            SharedProperties.SelectedItemJson = null;
 
             NewItemButton.IsEnabled = true;
             NewItemButton.Visibility = Visibility.Visible;
@@ -261,6 +268,8 @@ namespace CosmosExplorer.UI
 
             DatabaseTreeView.IsEnabled = true;
             ItemListView.IsEnabled = true;
+
+            SharedProperties.SelectedItemJson = null;
 
             if (SharedProperties.IsEditMode)
             {
@@ -305,7 +314,7 @@ namespace CosmosExplorer.UI
 
             UpdateButton.IsEnabled = false;
         }
-        
+
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
             TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
@@ -331,8 +340,27 @@ namespace CosmosExplorer.UI
 
             string partitionKey = SharedProperties.ContainerPartitionKey[SharedProperties.SelectedContainer].TrimStart('/');
 
-            string partitionKeyValue = newItemJson[partitionKey].ToString();
-            string id = newItemJson["id"].ToString();
+            string partitionKeyValue = string.Empty;
+            try
+            {
+                partitionKeyValue = newItemJson[partitionKey].ToString();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Invalid partition key", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            string id = string.Empty;
+            try
+            {
+                id = newItemJson["id"].ToString();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Invalid id", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             await CosmosExplorerHelper.SaveItemAsync(newItemJson, partitionKeyValue).ConfigureAwait(true);
 
@@ -360,6 +388,8 @@ namespace CosmosExplorer.UI
             SharedProperties.IsCreatingItem = false;
 
             DatabaseTreeView.IsEnabled = true;
+
+            DisplayJson(string.Empty);
         }
 
         private void DisplayJson(string json)
@@ -409,7 +439,15 @@ namespace CosmosExplorer.UI
             }
             else if (token.Type == JTokenType.String)
             {
-                paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                if (token.Path == "_etag")
+                {
+                    paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                }
+                else
+                {
+                    paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                }
+
                 paragraph.Inlines.Add(new Run("\n"));
             }
             else if (token.Type == JTokenType.Date)
