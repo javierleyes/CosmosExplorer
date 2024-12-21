@@ -403,7 +403,7 @@ namespace CosmosExplorer.UI
             Paragraph paragraph = new Paragraph();
             var jsonObject = JObject.Parse(json);
 
-            AddJsonToken(paragraph, jsonObject, 0);
+            AddJsonToken(paragraph, jsonObject, 0, true);
 
             ItemDescriptionRichTextBox.Document.Blocks.Clear();
             ItemDescriptionRichTextBox.Document.Blocks.Add(paragraph);
