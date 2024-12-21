@@ -175,6 +175,8 @@ namespace CosmosExplorer.UI
 
                 DiscardButton.IsEnabled = false;
                 DiscardButton.Visibility = Visibility.Collapsed;
+
+                ItemListView.IsEnabled = true;
             }
         }
 
@@ -268,8 +270,6 @@ namespace CosmosExplorer.UI
 
             DatabaseTreeView.IsEnabled = true;
             ItemListView.IsEnabled = true;
-
-            SharedProperties.SelectedItemJson = null;
 
             if (SharedProperties.IsEditMode)
             {
@@ -441,7 +441,14 @@ namespace CosmosExplorer.UI
             {
                 if (token.Path == "_etag")
                 {
-                    paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    if (token.ToString().Contains("\""))
+                    {
+                        paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    }
+                    else
+                    {
+                        paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    }
                 }
                 else
                 {
