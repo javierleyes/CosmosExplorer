@@ -386,7 +386,7 @@ namespace CosmosExplorer.UI
             if (token is JProperty property)
             {
                 paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\": ") { Foreground = Brushes.Maroon });
-                AddJsonToken(paragraph, property.Value, indentLevel, true);
+                AddJsonToken(paragraph, property.Value, indentLevel, isLast);
             }
             else if (token is JObject obj)
             {
@@ -409,12 +409,12 @@ namespace CosmosExplorer.UI
             }
             else if (token.Type == JTokenType.String)
             {
-                paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
             else
             {
-                paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
         }
