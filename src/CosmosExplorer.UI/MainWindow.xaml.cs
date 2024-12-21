@@ -412,12 +412,18 @@ namespace CosmosExplorer.UI
                 paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
+            else if (token.Type == JTokenType.Date)
+            {
+                DateTime dateTime = token.ToObject<DateTime>();
+                string utcDate = dateTime.ToString("o"); // ISO 8601 format
+                paragraph.Inlines.Add(new Run($"{indent}\"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run("\n"));
+            }
             else
             {
                 paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
         }
-
     }
 }
