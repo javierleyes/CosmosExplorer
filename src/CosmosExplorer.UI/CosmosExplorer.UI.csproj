@@ -9,17 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Icons\Cosmos explorer.ico" />
-    <None Remove="Images\CatDeveloping.png" />
-    <None Remove="Images\OrangeCatDeveloping.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CosmosExplorer\CosmosExplorer.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\Cosmos explorer.ico" />
+    <Resource Include="Icons\orbit.ico" />
     <Resource Include="Images\OrangeCatDeveloping.png" />
   </ItemGroup>
 
