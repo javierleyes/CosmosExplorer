@@ -38,6 +38,7 @@ namespace CosmosExplorer.UI
             NewItemButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
             DeleteButton.IsEnabled = false;
+            FilterTextBox.Text = string.Empty;
 
             FilterPanel.IsEnabled = false;
 
@@ -185,6 +186,9 @@ namespace CosmosExplorer.UI
             DisplayJson(string.Empty);
 
             await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+
+            DatabaseTreeView.IsEnabled = true;
+            ItemListView.IsEnabled = true;
         }
 
         private void NewItem_Click(object sender, RoutedEventArgs e)
