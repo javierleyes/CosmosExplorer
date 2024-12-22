@@ -27,6 +27,24 @@ namespace CosmosExplorer.UI
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
         }
 
+        private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectResourceGroupModal modal = new ConnectResourceGroupModal();
+            modal.Owner = this;
+            modal.ShowDialog();
+        }
+
+        private void CloseApplication_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow aboutWindow = new AboutWindow();
+            aboutWindow.ShowDialog();
+        }
+
         private async void DatabaseTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             SharedProperties.SelectedDatabase = string.Empty;
@@ -110,24 +128,6 @@ namespace CosmosExplorer.UI
             });
         }
 
-        private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
-        {
-            ConnectResourceGroupModal modal = new ConnectResourceGroupModal();
-            modal.Owner = this;
-            modal.ShowDialog();
-        }
-
-        private void CloseApplication_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            AboutWindow aboutWindow = new AboutWindow();
-            aboutWindow.ShowDialog();
-        }
-
         private void ItemDescriptionRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
@@ -191,6 +191,19 @@ namespace CosmosExplorer.UI
 
             DatabaseTreeView.IsEnabled = true;
             ItemListView.IsEnabled = true;
+            FilterPanel.IsEnabled = true;
+
+            NewItemButton.IsEnabled = true;
+            NewItemButton.Visibility = Visibility.Visible;
+
+            UpdateButton.IsEnabled = false;
+            UpdateButton.Visibility = Visibility.Visible;
+
+            DeleteButton.IsEnabled = true;
+            DeleteButton.Visibility = Visibility.Visible;
+
+            DiscardButton.IsEnabled = false;
+            DiscardButton.Visibility = Visibility.Collapsed;
         }
 
         private void NewItem_Click(object sender, RoutedEventArgs e)
