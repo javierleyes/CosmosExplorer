@@ -13,6 +13,8 @@ namespace CosmosExplorer.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        const int IndentSize = 8;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -415,12 +417,12 @@ namespace CosmosExplorer.UI
 
         private void AddJsonToken(Paragraph paragraph, JToken token, int indentLevel, bool isLast = false)
         {
-            string indent = new string(' ', indentLevel * 2);
+            string indent = new string(' ', indentLevel * IndentSize);
 
             if (token is JProperty property)
             {
                 paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\": ") { Foreground = Brushes.Maroon });
-                AddJsonToken(paragraph, property.Value, indentLevel, isLast);
+                AddJsonToken(paragraph, property.Value, 0, isLast);
             }
             else if (token is JObject obj)
             {
@@ -437,9 +439,9 @@ namespace CosmosExplorer.UI
                 paragraph.Inlines.Add(new Run($"{indent}[\n"));
                 for (int i = 0; i < array.Count(); i++)
                 {
-                    AddJsonToken(paragraph, array[i], indentLevel + 1, i == array.Count() - 1);
+                    AddJsonToken(paragraph, array[i], 2, i == array.Count() - 1);
                 }
-                paragraph.Inlines.Add(new Run($"{indent}]{(isLast ? "" : ",")}\n"));
+                paragraph.Inlines.Add(new Run($"{new string(' ', IndentSize)}]{(isLast ? "" : ",")}\n"));
             }
             else if (token.Type == JTokenType.String)
             {
