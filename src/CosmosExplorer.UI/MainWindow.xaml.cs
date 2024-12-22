@@ -439,9 +439,9 @@ namespace CosmosExplorer.UI
                 paragraph.Inlines.Add(new Run($"{indent}[\n"));
                 for (int i = 0; i < array.Count(); i++)
                 {
-                    AddJsonToken(paragraph, array[i], 2, i == array.Count() - 1);
+                    AddJsonToken(paragraph, array[i], indentLevel + 2, i == array.Count() - 1);
                 }
-                paragraph.Inlines.Add(new Run($"{new string(' ', IndentSize)}]{(isLast ? "" : ",")}\n"));
+                paragraph.Inlines.Add(new Run($"{new string(' ', indentLevel + IndentSize)}]{(isLast ? "" : ",")}\n"));
             }
             else if (token.Type == JTokenType.String)
             {
@@ -449,16 +449,16 @@ namespace CosmosExplorer.UI
                 {
                     if (token.ToString().Contains("\""))
                     {
-                        paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                        paragraph.Inlines.Add(new Run($"{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                     }
                     else
                     {
-                        paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                        paragraph.Inlines.Add(new Run($"\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                     }
                 }
                 else
                 {
-                    paragraph.Inlines.Add(new Run($"{indent}\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    paragraph.Inlines.Add(new Run($"\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 }
 
                 paragraph.Inlines.Add(new Run("\n"));
@@ -467,12 +467,12 @@ namespace CosmosExplorer.UI
             {
                 DateTime dateTime = token.ToObject<DateTime>();
                 string utcDate = dateTime.ToString("o"); // ISO 8601 format
-                paragraph.Inlines.Add(new Run($"{indent}\"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($"\"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
             else
             {
-                paragraph.Inlines.Add(new Run($"{indent}{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($"{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
         }
