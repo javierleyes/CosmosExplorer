@@ -13,8 +13,6 @@ namespace CosmosExplorer.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int IndentSize = 4;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -417,11 +415,11 @@ namespace CosmosExplorer.UI
 
         private void AddJsonToken(Paragraph paragraph, JToken token, int indentLevel, bool isLast = false)
         {
-            string indent = new string(' ', indentLevel * IndentSize);
+            string indent = new string(' ', indentLevel * 4);
 
             if (token is JProperty property)
             {
-                paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\": ") { Foreground = Brushes.Maroon });
+                paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\":") { Foreground = Brushes.Maroon });
                 AddJsonToken(paragraph, property.Value, indentLevel, isLast);
             }
             else if (token is JObject obj)
@@ -449,16 +447,16 @@ namespace CosmosExplorer.UI
                 {
                     if (token.ToString().Contains("\""))
                     {
-                        paragraph.Inlines.Add(new Run($"{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                        paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                     }
                     else
                     {
-                        paragraph.Inlines.Add(new Run($"\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                        paragraph.Inlines.Add(new Run($" \"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                     }
                 }
                 else
                 {
-                    paragraph.Inlines.Add(new Run($"\"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    paragraph.Inlines.Add(new Run($" \"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 }
 
                 paragraph.Inlines.Add(new Run("\n"));
@@ -467,12 +465,12 @@ namespace CosmosExplorer.UI
             {
                 DateTime dateTime = token.ToObject<DateTime>();
                 string utcDate = dateTime.ToString("o"); // ISO 8601 format
-                paragraph.Inlines.Add(new Run($"\"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($" \"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
             else
             {
-                paragraph.Inlines.Add(new Run($"{token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
         }
