@@ -166,6 +166,10 @@ namespace CosmosExplorer.UI
             }
             else
             {
+                DatabaseTreeView.IsEnabled = true;
+                ItemListView.IsEnabled = true;
+                FilterPanel.IsEnabled = true;
+
                 UpdateButton.IsEnabled = false;
 
                 NewItemButton.IsEnabled = true;
@@ -176,8 +180,6 @@ namespace CosmosExplorer.UI
 
                 DiscardButton.IsEnabled = false;
                 DiscardButton.Visibility = Visibility.Collapsed;
-
-                ItemListView.IsEnabled = true;
             }
         }
 
@@ -278,8 +280,6 @@ namespace CosmosExplorer.UI
             if (SharedProperties.IsEditMode)
             {
                 SharedProperties.IsEditMode = false;
-
-                FilterPanel.IsEnabled = true;
 
                 DisplayJson(SharedProperties.SelectedItemJson);
             }

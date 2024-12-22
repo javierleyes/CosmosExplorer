@@ -116,7 +116,7 @@ namespace CosmosExplorer.UI.Common
 
                 SharedProperties.ItemListViewCollection.Clear();
 
-                string query = "SELECT TOP 30 * FROM c";
+                string query = "SELECT TOP 35 * FROM c";
                 List<Tuple<string, string>> items = new List<Tuple<string, string>>();
 
                 FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, query);
