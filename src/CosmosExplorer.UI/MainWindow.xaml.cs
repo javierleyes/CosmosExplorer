@@ -441,7 +441,7 @@ namespace CosmosExplorer.UI
                 {
                     AddJsonToken(paragraph, array[i], indentLevel + 2, i == array.Count() - 1);
                 }
-                paragraph.Inlines.Add(new Run($"{new string(' ', indentLevel + IndentSize)}]{(isLast ? "" : ",")}\n"));
+                paragraph.Inlines.Add(new Run($"{indent}]{(isLast ? "" : ",")}\n"));
             }
             else if (token.Type == JTokenType.String)
             {
