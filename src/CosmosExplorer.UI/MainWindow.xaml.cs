@@ -13,7 +13,7 @@ namespace CosmosExplorer.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int IndentSize = 8;
+        const int IndentSize = 4;
 
         public MainWindow()
         {
@@ -422,7 +422,7 @@ namespace CosmosExplorer.UI
             if (token is JProperty property)
             {
                 paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\": ") { Foreground = Brushes.Maroon });
-                AddJsonToken(paragraph, property.Value, 0, isLast);
+                AddJsonToken(paragraph, property.Value, indentLevel, isLast);
             }
             else if (token is JObject obj)
             {
