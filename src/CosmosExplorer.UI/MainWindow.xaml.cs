@@ -128,61 +128,6 @@ namespace CosmosExplorer.UI
             });
         }
 
-        private void ItemDescriptionRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
-
-            if (SharedProperties.IsCreatingItem)
-            {
-                DiscardButton.IsEnabled = true;
-                DiscardButton.Visibility = Visibility.Visible;
-
-                return;
-            }
-
-            if (SharedProperties.SelectedItemJson is null)
-            {
-                return;
-            }
-
-            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, textRange.Text);
-
-            if (SharedProperties.IsEditMode)
-            {
-                DatabaseTreeView.IsEnabled = false;
-                ItemListView.IsEnabled = false;
-                FilterPanel.IsEnabled = false;
-
-                NewItemButton.IsEnabled = false;
-                NewItemButton.Visibility = Visibility.Collapsed;
-
-                DeleteButton.IsEnabled = false;
-                DeleteButton.Visibility = Visibility.Collapsed;
-
-                UpdateButton.IsEnabled = true;
-
-                DiscardButton.IsEnabled = true;
-                DiscardButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                DatabaseTreeView.IsEnabled = true;
-                ItemListView.IsEnabled = true;
-                FilterPanel.IsEnabled = true;
-
-                UpdateButton.IsEnabled = false;
-
-                NewItemButton.IsEnabled = true;
-                NewItemButton.Visibility = Visibility.Visible;
-
-                DeleteButton.IsEnabled = true;
-                DeleteButton.Visibility = Visibility.Visible;
-
-                DiscardButton.IsEnabled = false;
-                DiscardButton.Visibility = Visibility.Collapsed;
-            }
-        }
-
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
             DisplayJson(string.Empty);
@@ -299,11 +244,11 @@ namespace CosmosExplorer.UI
 
             if (SharedProperties.IsCreatingItem)
             {
-                DisplayJson(string.Empty);
-
                 DeleteButton.IsEnabled = false;
 
                 SharedProperties.IsCreatingItem = false;
+
+                DisplayJson(string.Empty);
             }
         }
 
@@ -407,6 +352,61 @@ namespace CosmosExplorer.UI
             DatabaseTreeView.IsEnabled = true;
 
             DisplayJson(string.Empty);
+        }
+
+        private void ItemDescriptionRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
+            if (SharedProperties.IsCreatingItem)
+            {
+                DiscardButton.IsEnabled = true;
+                DiscardButton.Visibility = Visibility.Visible;
+
+                return;
+            }
+
+            if (SharedProperties.SelectedItemJson is null)
+            {
+                return;
+            }
+
+            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, textRange.Text);
+
+            if (SharedProperties.IsEditMode)
+            {
+                DatabaseTreeView.IsEnabled = false;
+                ItemListView.IsEnabled = false;
+                FilterPanel.IsEnabled = false;
+
+                NewItemButton.IsEnabled = false;
+                NewItemButton.Visibility = Visibility.Collapsed;
+
+                DeleteButton.IsEnabled = false;
+                DeleteButton.Visibility = Visibility.Collapsed;
+
+                UpdateButton.IsEnabled = true;
+
+                DiscardButton.IsEnabled = true;
+                DiscardButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DatabaseTreeView.IsEnabled = true;
+                ItemListView.IsEnabled = true;
+                FilterPanel.IsEnabled = true;
+
+                UpdateButton.IsEnabled = false;
+
+                NewItemButton.IsEnabled = true;
+                NewItemButton.Visibility = Visibility.Visible;
+
+                DeleteButton.IsEnabled = true;
+                DeleteButton.Visibility = Visibility.Visible;
+
+                DiscardButton.IsEnabled = false;
+                DiscardButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void DisplayJson(string json)
