@@ -1,7 +1,10 @@
 ﻿using CosmosExplorer.UI.Common;
 using CosmosExplorer.UI.Modal;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace CosmosExplorer.UI
 {
@@ -24,25 +27,42 @@ namespace CosmosExplorer.UI
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
         }
 
+        private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectResourceGroupModal modal = new ConnectResourceGroupModal();
+            modal.Owner = this;
+            modal.ShowDialog();
+        }
+
+        private void CloseApplication_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow aboutWindow = new AboutWindow();
+            aboutWindow.ShowDialog();
+        }
+
         private async void DatabaseTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             SharedProperties.SelectedDatabase = string.Empty;
             SharedProperties.SelectedContainer = string.Empty;
             SharedProperties.SelectedItemId = string.Empty;
             SharedProperties.SelectedItemPartitionKey = string.Empty;
-            SharedProperties.SelectedItemJson = string.Empty;
+            SharedProperties.SelectedItemJson = null;
 
             NewItemButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
             DeleteButton.IsEnabled = false;
+            FilterTextBox.Text = string.Empty;
 
             FilterPanel.IsEnabled = false;
 
             Items.IsEnabled = false;
             ItemListView.IsEnabled = false;
-            ItemDescriptionTextBox.IsEnabled = false;
-
-            ItemDescriptionTextBox.Text = string.Empty;
+            ItemDescriptionRichTextBox.IsEnabled = false;
 
             SharedProperties.ItemListViewCollection.Clear();
 
@@ -51,7 +71,12 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            await CosmosExplorerHelper.LoadItemsAsync(selectedContainer.Database, selectedContainer.Name).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.LoadItemsAsync(selectedContainer.Database, selectedContainer.Name).ConfigureAwait(true);
+
+            if (!result)
+            {
+                return;
+            }
 
             NewItemButton.IsEnabled = true;
 
@@ -59,15 +84,15 @@ namespace CosmosExplorer.UI
 
             ItemListView.IsEnabled = true;
             Items.IsEnabled = true;
-            ItemDescriptionTextBox.IsEnabled = true;
+            ItemDescriptionRichTextBox.IsEnabled = true;
 
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
         }
 
         private async void ItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             DeleteButton.IsEnabled = false;
-            
+
             DiscardButton.IsEnabled = false;
             DiscardButton.Visibility = Visibility.Collapsed;
 
@@ -91,87 +116,54 @@ namespace CosmosExplorer.UI
 
             SharedProperties.SelectedItemId = itemId;
             SharedProperties.SelectedItemPartitionKey = partitionKey;
+            SharedProperties.SelectedItemJson = null;
 
             DeleteButton.IsEnabled = true;
 
             dynamic item = await CosmosExplorerHelper.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, SharedProperties.SelectedItemId).ConfigureAwait(true);
 
-            // Use Dispatcher to update the UI
-            Dispatcher.Invoke(() =>
+            if (item is null)
             {
-                SharedProperties.SelectedItemJson = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
-                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
-            });
-        }
-
-        private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
-        {
-            ConnectResourceGroupModal modal = new ConnectResourceGroupModal();
-            modal.Owner = this;
-            modal.ShowDialog();
-        }
-
-        private void CloseApplication_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            AboutWindow aboutWindow = new AboutWindow();
-            aboutWindow.ShowDialog();
-        }
-
-        private void ItemDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (SharedProperties.IsCreatingItem)
-            {
-                DiscardButton.IsEnabled = true;
-                DiscardButton.Visibility = Visibility.Visible;
-
                 return;
             }
 
-            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, ItemDescriptionTextBox.Text);
-
-            if (SharedProperties.IsEditMode)
+            // Use Dispatcher to update the UI
+            Dispatcher.Invoke(() =>
             {
-                DatabaseTreeView.IsEnabled = false;
-                ItemListView.IsEnabled = false;
-                FilterPanel.IsEnabled = false;
+                string jsonFromBackend = Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.Indented);
+                DisplayJson(jsonFromBackend);
 
-                NewItemButton.IsEnabled = false;
-                NewItemButton.Visibility = Visibility.Collapsed;
-
-                DeleteButton.IsEnabled = false;
-                DeleteButton.Visibility = Visibility.Collapsed;
-
-                UpdateButton.IsEnabled = true;
-
-                DiscardButton.IsEnabled = true;
-                DiscardButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                UpdateButton.IsEnabled = false;
-
-                NewItemButton.IsEnabled = true;
-                NewItemButton.Visibility = Visibility.Visible;
-
-                DeleteButton.IsEnabled = true;
-                DeleteButton.Visibility = Visibility.Visible;
-
-                DiscardButton.IsEnabled = false;
-                DiscardButton.Visibility = Visibility.Collapsed;
-            }
+                TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+                SharedProperties.SelectedItemJson = textRange.Text;
+            });
         }
 
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
 
-            // TODO: Validate query.
-            await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+
+            if (result)
+            {
+                return;
+            }
+
+            DatabaseTreeView.IsEnabled = true;
+            ItemListView.IsEnabled = true;
+            FilterPanel.IsEnabled = true;
+
+            NewItemButton.IsEnabled = true;
+            NewItemButton.Visibility = Visibility.Visible;
+
+            UpdateButton.IsEnabled = false;
+            UpdateButton.Visibility = Visibility.Visible;
+
+            DeleteButton.IsEnabled = true;
+            DeleteButton.Visibility = Visibility.Visible;
+
+            DiscardButton.IsEnabled = false;
+            DiscardButton.Visibility = Visibility.Collapsed;
         }
 
         private void NewItem_Click(object sender, RoutedEventArgs e)
@@ -197,19 +189,21 @@ namespace CosmosExplorer.UI
 
             SharedProperties.SelectedItemId = string.Empty;
             SharedProperties.SelectedItemPartitionKey = string.Empty;
-            SharedProperties.SelectedItemJson = string.Empty;
+            SharedProperties.SelectedItemJson = null;
 
             SharedProperties.IsCreatingItem = true;
 
             DatabaseTreeView.IsEnabled = false;
 
             // Important this should be the last line!!!
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
         }
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
-            bool result = await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, ItemDescriptionTextBox.Text).ConfigureAwait(true);
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
+            bool result = await CosmosExplorerHelper.UpdateItemAsync(SharedProperties.SelectedItemId, SharedProperties.SelectedItemPartitionKey, textRange.Text).ConfigureAwait(true);
 
             if (!result)
             {
@@ -222,6 +216,7 @@ namespace CosmosExplorer.UI
             DiscardButton.Visibility = Visibility.Collapsed;
 
             SharedProperties.IsEditMode = false;
+            SharedProperties.SelectedItemJson = null;
 
             NewItemButton.IsEnabled = true;
             NewItemButton.Visibility = Visibility.Visible;
@@ -259,17 +254,16 @@ namespace CosmosExplorer.UI
             {
                 SharedProperties.IsEditMode = false;
 
-                FilterPanel.IsEnabled = true;
-
-                ItemDescriptionTextBox.Text = SharedProperties.SelectedItemJson;
+                DisplayJson(SharedProperties.SelectedItemJson);
             }
-            
-            if(SharedProperties.IsCreatingItem)
+
+            if (SharedProperties.IsCreatingItem)
             {
-                ItemDescriptionTextBox.Text = string.Empty;
                 DeleteButton.IsEnabled = false;
 
                 SharedProperties.IsCreatingItem = false;
+
+                DisplayJson(string.Empty);
             }
         }
 
@@ -293,13 +287,17 @@ namespace CosmosExplorer.UI
 
             SharedProperties.ItemListViewCollection.RemoveAt(ItemListView.SelectedIndex);
 
-            ItemDescriptionTextBox.Text = string.Empty;
+            DisplayJson(string.Empty);
+
             UpdateButton.IsEnabled = false;
         }
 
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            string newItem = ItemDescriptionTextBox.Text;
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
+            string newItem = textRange.Text;
+
             if (string.IsNullOrWhiteSpace(newItem))
             {
                 MessageBox.Show("Item description cannot be empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -319,10 +317,34 @@ namespace CosmosExplorer.UI
 
             string partitionKey = SharedProperties.ContainerPartitionKey[SharedProperties.SelectedContainer].TrimStart('/');
 
-            string partitionKeyValue = newItemJson[partitionKey].ToString();
-            string id = newItemJson["id"].ToString();
+            string partitionKeyValue = string.Empty;
+            try
+            {
+                partitionKeyValue = newItemJson[partitionKey].ToString();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Invalid partition key", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            await CosmosExplorerHelper.SaveItemAsync(newItemJson, partitionKeyValue).ConfigureAwait(true);
+            string id = string.Empty;
+            try
+            {
+                id = newItemJson["id"].ToString();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Invalid id", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            bool result = await CosmosExplorerHelper.SaveItemAsync(newItemJson, partitionKeyValue).ConfigureAwait(true);
+
+            if (!result)
+            {
+                return;
+            }
 
             SharedProperties.ItemListViewCollection.AddItem(id, partitionKeyValue);
 
@@ -348,6 +370,142 @@ namespace CosmosExplorer.UI
             SharedProperties.IsCreatingItem = false;
 
             DatabaseTreeView.IsEnabled = true;
+
+            DisplayJson(string.Empty);
+        }
+
+        private void ItemDescriptionRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextRange textRange = new TextRange(ItemDescriptionRichTextBox.Document.ContentStart, ItemDescriptionRichTextBox.Document.ContentEnd);
+
+            if (SharedProperties.IsCreatingItem)
+            {
+                DiscardButton.IsEnabled = true;
+                DiscardButton.Visibility = Visibility.Visible;
+
+                return;
+            }
+
+            if (SharedProperties.SelectedItemJson is null)
+            {
+                return;
+            }
+
+            CosmosExplorerHelper.SetEditMode(SharedProperties.SelectedItemJson, textRange.Text);
+
+            if (SharedProperties.IsEditMode)
+            {
+                DatabaseTreeView.IsEnabled = false;
+                ItemListView.IsEnabled = false;
+                FilterPanel.IsEnabled = false;
+
+                NewItemButton.IsEnabled = false;
+                NewItemButton.Visibility = Visibility.Collapsed;
+
+                DeleteButton.IsEnabled = false;
+                DeleteButton.Visibility = Visibility.Collapsed;
+
+                UpdateButton.IsEnabled = true;
+
+                DiscardButton.IsEnabled = true;
+                DiscardButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DatabaseTreeView.IsEnabled = true;
+                ItemListView.IsEnabled = true;
+                FilterPanel.IsEnabled = true;
+
+                UpdateButton.IsEnabled = false;
+
+                NewItemButton.IsEnabled = true;
+                NewItemButton.Visibility = Visibility.Visible;
+
+                DeleteButton.IsEnabled = true;
+                DeleteButton.Visibility = Visibility.Visible;
+
+                DiscardButton.IsEnabled = false;
+                DiscardButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void DisplayJson(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                ItemDescriptionRichTextBox.Document.Blocks.Clear();
+                return;
+            }
+
+            Paragraph paragraph = new Paragraph();
+            var jsonObject = JObject.Parse(json);
+
+            AddJsonToken(paragraph, jsonObject, 0, true);
+
+            ItemDescriptionRichTextBox.Document.Blocks.Clear();
+            ItemDescriptionRichTextBox.Document.Blocks.Add(paragraph);
+        }
+
+        private void AddJsonToken(Paragraph paragraph, JToken token, int indentLevel, bool isLast = false)
+        {
+            string indent = new string(' ', indentLevel * 4);
+
+            if (token is JProperty property)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\":") { Foreground = Brushes.Maroon });
+                AddJsonToken(paragraph, property.Value, indentLevel, isLast);
+            }
+            else if (token is JObject obj)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}{{\n"));
+                var children = obj.Children().ToList();
+                for (int i = 0; i < children.Count; i++)
+                {
+                    AddJsonToken(paragraph, children[i], indentLevel + 1, i == children.Count - 1);
+                }
+                paragraph.Inlines.Add(new Run($"{indent}}}{(isLast ? "" : ",")}\n"));
+            }
+            else if (token is JArray array)
+            {
+                paragraph.Inlines.Add(new Run($"{indent}[\n"));
+                for (int i = 0; i < array.Count(); i++)
+                {
+                    AddJsonToken(paragraph, array[i], indentLevel + 2, i == array.Count() - 1);
+                }
+                paragraph.Inlines.Add(new Run($"{indent}]{(isLast ? "" : ",")}\n"));
+            }
+            else if (token.Type == JTokenType.String)
+            {
+                if (token.Path == "_etag")
+                {
+                    if (token.ToString().Contains("\""))
+                    {
+                        paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    }
+                    else
+                    {
+                        paragraph.Inlines.Add(new Run($" \"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                    }
+                }
+                else
+                {
+                    paragraph.Inlines.Add(new Run($" \"{token.ToString()}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                }
+
+                paragraph.Inlines.Add(new Run("\n"));
+            }
+            else if (token.Type == JTokenType.Date)
+            {
+                DateTime dateTime = token.ToObject<DateTime>();
+                string utcDate = dateTime.ToString("o"); // ISO 8601 format
+                paragraph.Inlines.Add(new Run($" \"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run("\n"));
+            }
+            else
+            {
+                paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run("\n"));
+            }
         }
     }
 }

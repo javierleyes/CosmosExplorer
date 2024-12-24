@@ -107,7 +107,7 @@ namespace CosmosExplorer.UI.Common
             }
         }
 
-        public static async Task LoadItemsAsync(string databaseName, string containerName)
+        public static async Task<bool> LoadItemsAsync(string databaseName, string containerName)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace CosmosExplorer.UI.Common
 
                 SharedProperties.ItemListViewCollection.Clear();
 
-                string query = "SELECT TOP 30 * FROM c";
+                string query = "SELECT TOP 35 * FROM c";
                 List<Tuple<string, string>> items = new List<Tuple<string, string>>();
 
                 FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, query);
@@ -132,14 +132,17 @@ namespace CosmosExplorer.UI.Common
                 }
 
                 SharedProperties.ItemListViewCollection.LoadItems(items);
+
+                return true;
             }
             catch (Exception)
             {
                 MessageBox.Show("An error occurred while loading items.", "Loading items", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 
-        public static async Task SearchByQueryAsync(string query)
+        public static async Task<bool> SearchByQueryAsync(string query)
         {
             try
             {
@@ -160,10 +163,13 @@ namespace CosmosExplorer.UI.Common
                 }
 
                 SharedProperties.ItemListViewCollection.LoadItems(items);
+
+                return true;
             }
             catch (Exception)
             {
                 MessageBox.Show("An error occurred while searching by query.", "Searching by query", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 
@@ -175,7 +181,7 @@ namespace CosmosExplorer.UI.Common
 
                 SharedProperties.SelectedItemId = string.Empty;
                 SharedProperties.SelectedItemPartitionKey = string.Empty;
-                SharedProperties.SelectedItemJson = string.Empty;
+                SharedProperties.SelectedItemJson = null;
 
                 return true;
             }
@@ -186,15 +192,17 @@ namespace CosmosExplorer.UI.Common
             }
         }
 
-        public static async Task SaveItemAsync(dynamic item, string partitionKey)
+        public static async Task<bool> SaveItemAsync(dynamic item, string partitionKey)
         {
             try
             {
                 await CosmosExplorerCore.InsertItemAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, item, partitionKey).ConfigureAwait(true);
+                return true;
             }
             catch (Exception)
             {
                 MessageBox.Show("An error occurred while saving item.", "Saving item", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 
