@@ -71,7 +71,12 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            await CosmosExplorerHelper.LoadItemsAsync(selectedContainer.Database, selectedContainer.Name).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.LoadItemsAsync(selectedContainer.Database, selectedContainer.Name).ConfigureAwait(true);
+
+            if (!result)
+            {
+                return;
+            }
 
             NewItemButton.IsEnabled = true;
 
@@ -117,6 +122,11 @@ namespace CosmosExplorer.UI
 
             dynamic item = await CosmosExplorerHelper.GetItemByIdAsync(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, SharedProperties.SelectedItemId).ConfigureAwait(true);
 
+            if (item is null)
+            {
+                return;
+            }
+
             // Use Dispatcher to update the UI
             Dispatcher.Invoke(() =>
             {
@@ -132,7 +142,12 @@ namespace CosmosExplorer.UI
         {
             DisplayJson(string.Empty);
 
-            await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
+
+            if (result)
+            {
+                return;
+            }
 
             DatabaseTreeView.IsEnabled = true;
             ItemListView.IsEnabled = true;
@@ -324,7 +339,12 @@ namespace CosmosExplorer.UI
                 return;
             }
 
-            await CosmosExplorerHelper.SaveItemAsync(newItemJson, partitionKeyValue).ConfigureAwait(true);
+            bool result = await CosmosExplorerHelper.SaveItemAsync(newItemJson, partitionKeyValue).ConfigureAwait(true);
+
+            if (!result)
+            {
+                return;
+            }
 
             SharedProperties.ItemListViewCollection.AddItem(id, partitionKeyValue);
 
