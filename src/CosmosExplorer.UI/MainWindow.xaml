@@ -63,7 +63,7 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="260"/>
-                                <GridViewColumn Header="PartitionKey" DisplayMemberBinding="{Binding PartitionKey}" Width="260"/>
+                                <GridViewColumn x:Name="PartitionKeyColumn" Header="PartitionKey" DisplayMemberBinding="{Binding PartitionKey}" Width="260"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
