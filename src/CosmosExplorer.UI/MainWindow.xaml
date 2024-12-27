@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CosmosExplorer.UI"
         xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CosmosExplorer.UI.MainWindow"
-        Title="Cosmos Explorer (Preview 2)" Height="1000" Width="1800"
+        Title="Cosmos Explorer (Preview 2)" Height="1000" Width="1900"
         Icon="/Icons/orbit.ico"
         WindowStartupLocation="CenterScreen">
     <Grid>
@@ -41,9 +41,9 @@
                 </TreeView>
             </StackPanel>
 
-            <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1450" Height="860" Margin="20,0,0,0">
+            <StackPanel x:Name="CenterPanel" Orientation="Vertical" VerticalAlignment="Top" Width="1550" Height="860" Margin="20,0,0,0">
 
-                <StackPanel x:Name="ToolBar" Width="1450" Height="40" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,10">
+                <StackPanel x:Name="ToolBar" Width="1550" Height="40" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,10">
                     <Button x:Name="NewItemButton" Content="New Item" Width="100" Click="NewItem_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0"/>
                     <Button x:Name="SaveButton" Content="Save" Width="100" Click="Save_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0" Visibility="Collapsed"/>
                     <Button x:Name="UpdateButton" Content="Update" Width="100" Click="Update_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0"/>
@@ -51,13 +51,13 @@
                     <Button x:Name="DeleteButton" Content="Delete" Width="100" Click="Delete_Click" Height="30" FontSize="14" IsEnabled="False" Margin="0,0,10,0"/>
                 </StackPanel>
 
-                <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1450" IsEnabled="False">
+                <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1550" IsEnabled="False">
                     <TextBox Width="140" Height="30" FontSize="14" Text=" SELECT * FROM c " IsReadOnly="True" VerticalAlignment="Center"/>
-                    <TextBox x:Name="FilterTextBox" Width="1210" Height="30" FontSize="14"/>
+                    <TextBox x:Name="FilterTextBox" Width="1310" Height="30" FontSize="14"/>
                     <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="14"/>
                 </StackPanel>
 
-                <StackPanel x:Name="Items" Orientation="Horizontal" Width="1450" Height="780" IsEnabled="False" Margin="0,10,0,0">
+                <StackPanel x:Name="Items" Orientation="Horizontal" Width="1550" Height="780" IsEnabled="False" Margin="0,10,0,0">
 
                     <ListView x:Name="ItemListView" Width="530" Height="760" SelectionChanged="ItemsListView_SelectionChanged" av:ItemsSource="{av:SampleData ItemCount=5}">
                         <ListView.View>
@@ -68,7 +68,7 @@
                         </ListView.View>
                     </ListView>
 
-                    <RichTextBox x:Name="ItemDescriptionRichTextBox" Width="910" Height="760" Margin="10,0,0,0" FontSize="14" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="ItemDescriptionRichTextBox_TextChanged" />
+                    <RichTextBox x:Name="ItemDescriptionRichTextBox" Width="1010" Height="760" Margin="10,0,0,0" FontSize="14" IsEnabled="False" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextChanged="ItemDescriptionRichTextBox_TextChanged" />
                 </StackPanel>
 
             </StackPanel>
