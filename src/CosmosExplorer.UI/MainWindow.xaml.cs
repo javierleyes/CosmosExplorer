@@ -144,7 +144,7 @@ namespace CosmosExplorer.UI
 
             bool result = await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
 
-            if (result)
+            if (!result)
             {
                 return;
             }
