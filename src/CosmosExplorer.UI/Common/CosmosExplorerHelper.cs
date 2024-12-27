@@ -121,14 +121,21 @@ namespace CosmosExplorer.UI.Common
 
                 FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, query);
 
+                string partitionKeyName = SharedProperties.ContainerPartitionKey[SharedProperties.SelectedContainer].TrimStart('/');
+
                 while (iterator.HasMoreResults)
                 {
                     FeedResponse<dynamic> response = await iterator.ReadNextAsync().ConfigureAwait(true);
                     foreach (var item in response)
                     {
-                        string partitionKey = SharedProperties.ContainerPartitionKey[SharedProperties.SelectedContainer].TrimStart('/');
-                        items.Add(new Tuple<string, string>(item["id"].ToString(), item[partitionKey].ToString()));
+                        items.Add(new Tuple<string, string>(item["id"].ToString(), item[partitionKeyName].ToString()));
                     }
+                }
+
+                // Get the MainWindow instance
+                if (Application.Current.MainWindow is MainWindow mainWindow)
+                {
+                    mainWindow.PartitionKeyColumn.Header = partitionKeyName;
                 }
 
                 SharedProperties.ItemListViewCollection.LoadItems(items);
