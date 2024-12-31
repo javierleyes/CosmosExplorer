@@ -18,6 +18,13 @@ namespace CosmosExplorer.UI
             try
             {
                 string connectionString = ConnectionStringTextBox.Text;
+
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    MessageBox.Show("The connection string can not be empty", "Save connection string", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 CosmosExplorerHelper.Initialize(connectionString);
 
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
@@ -42,6 +49,24 @@ namespace CosmosExplorer.UI
             finally
             {
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
+            }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            string connectionString = ConnectionStringTextBox.Text;
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                MessageBox.Show("The connection string can not be empty", "Save connection string", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            SaveConnectionStringModal modal = new SaveConnectionStringModal();
+
+            if (modal.ShowDialog() is true)
+            {
+                SharedProperties.SavedConnections.Add(modal.ConnectionStringNameTextBox.Text, connectionString);
             }
         }
     }

@@ -2,11 +2,13 @@
 {
     public static class SharedProperties
     {
+        public static Dictionary<string, string> SavedConnections { get; set; } = new Dictionary<string, string>();
+
         public static DatabaseTreeCollection DatabaseCollection { get; set; }
 
         public static ItemListViewCollection ItemListViewCollection { get; set; }
 
-        public static Dictionary<string, string> ContainerPartitionKey { get; set; }
+        public static Dictionary<string, string> ContainerPartitionKey { get; set; } = new Dictionary<string, string>();
 
         public static LoaderIndicator LoaderIndicator { get; set; }
 

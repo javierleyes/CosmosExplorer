@@ -25,6 +25,24 @@ namespace CosmosExplorer.UI
 
             SharedProperties.ItemListViewCollection = new ItemListViewCollection();
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
+
+            if (SharedProperties.SavedConnections.Keys.Count != 0)
+            {
+                SavedConnectionMenuItem.IsEnabled = true;
+
+                foreach(string connectionName in SharedProperties.SavedConnections.Keys)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Header = connectionName;
+                    menuItem.Click += ConnectionMenuItem_Click;
+                    SavedConnectionMenuItem.Items.Add(menuItem);
+                }
+            }
+        }
+
+        private void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"You clicked {(sender as MenuItem)?.Header}");
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)

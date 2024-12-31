@@ -6,7 +6,10 @@
         <StackPanel x:Name="ConnectionStringPanel" Height="220" Width="800" Orientation="Vertical">
             <Label Content="Enter the Account endpoint" FontSize="14" HorizontalAlignment="Left" Margin="5,10,0,0"/>
             <TextBox x:Name="ConnectionStringTextBox" Height="100" Width="780" Margin="10" Foreground="Gray" HorizontalAlignment="Left" FontSize="14" AcceptsReturn="True" TextWrapping="Wrap"/>
-            <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" FontSize="14" HorizontalAlignment="Right"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Save" Width="100" Margin="10" Click="SaveButton_Click" FontSize="14" HorizontalAlignment="Right"/>
+                <Button Content="Connect" Width="100" Margin="10" Click="ConnectButton_Click" FontSize="14" HorizontalAlignment="Right"/>
+            </StackPanel>
         </StackPanel>
         <StackPanel x:Name="Loader" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center">
             <ProgressBar x:Name="LoaderIndicator" Width="600" Height="20" IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -48,7 +48,6 @@ namespace CosmosExplorer.UI.Common
         public static async Task<Dictionary<string, List<ContainerInformation>>> GetDatabasesInformationAsync()
         {
             Dictionary<string, List<ContainerInformation>> databases = new Dictionary<string, List<ContainerInformation>>();
-            SharedProperties.ContainerPartitionKey = new Dictionary<string, string>();
 
             try
             {
