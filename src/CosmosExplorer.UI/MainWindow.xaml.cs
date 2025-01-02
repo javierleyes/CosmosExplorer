@@ -26,11 +26,14 @@ namespace CosmosExplorer.UI
             SharedProperties.ItemListViewCollection = new ItemListViewCollection();
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
 
+            // TODO: Remove this line.
+            // SharedProperties.SavedConnections.Add("My first connection", "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
+
             if (SharedProperties.SavedConnections.Keys.Count != 0)
             {
                 SavedConnectionMenuItem.IsEnabled = true;
 
-                foreach(string connectionName in SharedProperties.SavedConnections.Keys)
+                foreach (string connectionName in SharedProperties.SavedConnections.Keys)
                 {
                     MenuItem menuItem = new MenuItem();
                     menuItem.Header = connectionName;
@@ -40,9 +43,19 @@ namespace CosmosExplorer.UI
             }
         }
 
-        private void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"You clicked {(sender as MenuItem)?.Header}");
+            if (!SharedProperties.SavedConnections.TryGetValue((sender as MenuItem)?.Header.ToString(), out string connectionString))
+            {
+                MessageBox.Show("The saved connection value is invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            CosmosExplorerHelper.Initialize(connectionString);
+
+            await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
+
+            LeftPanel.IsEnabled = true;
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)

@@ -9,7 +9,7 @@
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Connect" Click="OpenConnectionModal_Click"/>
+                <MenuItem Header="New connection" Click="OpenConnectionModal_Click"/>
                 <MenuItem Name="SavedConnectionMenuItem" Header="Saved connections" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="CloseApplication_Click"/>
