@@ -156,7 +156,7 @@ namespace CosmosExplorer.UI.Common
 
                 List<Tuple<string, string>> items = new List<Tuple<string, string>>();
 
-                FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, $"SELECT * FROM c {query}");
+                FeedIterator<dynamic> iterator = CosmosExplorerCore.GetQueryIterator(SharedProperties.SelectedDatabase, SharedProperties.SelectedContainer, $"SELECT * FROM c WHERE {query}");
 
                 while (iterator.HasMoreResults)
                 {

@@ -210,6 +210,7 @@ namespace CosmosExplorer.UI
 
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Check this line. filter with a row selected.
             DisplayJson(string.Empty);
 
             bool result = await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
