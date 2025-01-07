@@ -19,7 +19,9 @@
             </MenuItem>
         </Menu>
 
-        <StackPanel Orientation="Horizontal" Margin="30,45,30,45">
+        <ProgressBar x:Name="MainPanelLoaderIndicator" Width="1000" Height="20" IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+        <StackPanel x:Name="MainPanel" Orientation="Horizontal" Margin="30,45,30,45">
 
             <StackPanel x:Name="LeftPanel" IsEnabled="False" Width="250" Height="860" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <TreeView x:Name="DatabaseTreeView" Width="250" Height="860" SelectedItemChanged="DatabaseTreeView_SelectedItemChanged">

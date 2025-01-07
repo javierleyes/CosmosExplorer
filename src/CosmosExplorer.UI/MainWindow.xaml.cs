@@ -82,19 +82,23 @@ namespace CosmosExplorer.UI
 
         private async void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
+            MainPanel.Visibility = Visibility.Collapsed;
+
             if (!SharedProperties.SavedConnections.TryGetValue((sender as MenuItem)?.Header.ToString(), out string connectionString))
             {
                 MessageBox.Show("The saved connection value is invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // TODO: Show loader indicator.
-
             CosmosExplorerHelper.Initialize(connectionString);
 
             await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
 
+            MainPanel.Visibility = Visibility.Visible;
+            SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
             LeftPanel.IsEnabled = true;
+
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)

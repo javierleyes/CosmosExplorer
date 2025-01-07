@@ -27,22 +27,26 @@ namespace CosmosExplorer.UI
                     return;
                 }
 
-                CosmosExplorerHelper.Initialize(connectionString);
+                this.Close();
 
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
-                ConnectionStringPanel.Visibility = Visibility.Collapsed;
-                Loader.Visibility = Visibility.Visible;
+
+                // Get the MainWindow instance
+                if (Application.Current.MainWindow is MainWindow mainWindowInstance1)
+                {
+                    mainWindowInstance1.MainPanel.Visibility = Visibility.Collapsed;
+                }
+
+                CosmosExplorerHelper.Initialize(connectionString);
 
                 await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
 
                 // Get the MainWindow instance
-                if (Application.Current.MainWindow is MainWindow mainWindow)
+                if (Application.Current.MainWindow is MainWindow mainWindowInstance2)
                 {
-                    mainWindow.LeftPanel.IsEnabled = true;
+                    mainWindowInstance2.MainPanel.Visibility = Visibility.Visible;
+                    mainWindowInstance2.LeftPanel.IsEnabled = true;
                 }
-
-                // Close the modal
-                this.Close();
             }
             catch (Exception)
             {
@@ -70,7 +74,6 @@ namespace CosmosExplorer.UI
             {
                 SharedProperties.SavedConnections.Add(modal.ConnectionStringNameTextBox.Text, connectionString);
 
-                // TODO: Save the new connection in the file.
                 // TODO: Save the file's name in the app settings.
                 string exeDirectory = AppContext.BaseDirectory;
                 string filePath = Path.Combine(exeDirectory, "savedConnections.json");
