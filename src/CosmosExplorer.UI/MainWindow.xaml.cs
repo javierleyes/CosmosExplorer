@@ -29,8 +29,6 @@ namespace CosmosExplorer.UI
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
 
             LoadSavedConnectionsFromFile();
-
-            PopulateSavedConnectionsMenu();
         }
 
         private void LoadSavedConnectionsFromFile()
@@ -99,6 +97,11 @@ namespace CosmosExplorer.UI
             SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
             LeftPanel.IsEnabled = true;
 
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            PopulateSavedConnectionsMenu();
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
