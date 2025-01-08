@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CosmosExplorer.UI"
         xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CosmosExplorer.UI.MainWindow"
-        Title="Cosmos Explorer (Preview 2)" Height="1000" Width="1900"
+        Title="Cosmos Explorer (Preview 3)" Height="1000" Width="1900"
         Icon="/Icons/orbit.ico"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Connect" Click="OpenConnectionModal_Click"/>
+                <MenuItem Header="New connection" Click="OpenConnectionModal_Click"/>
+                <MenuItem Name="SavedConnectionMenuItem" Header="Saved connections" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="CloseApplication_Click"/>
             </MenuItem>
@@ -18,7 +19,9 @@
             </MenuItem>
         </Menu>
 
-        <StackPanel Orientation="Horizontal" Margin="30,45,30,45">
+        <ProgressBar x:Name="MainPanelLoaderIndicator" Width="1000" Height="20" IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+        <StackPanel x:Name="MainPanel" Orientation="Horizontal" Margin="30,45,30,45">
 
             <StackPanel x:Name="LeftPanel" IsEnabled="False" Width="250" Height="860" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <TreeView x:Name="DatabaseTreeView" Width="250" Height="860" SelectedItemChanged="DatabaseTreeView_SelectedItemChanged">
@@ -52,8 +55,8 @@
                 </StackPanel>
 
                 <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1550" IsEnabled="False">
-                    <TextBox Width="140" Height="30" FontSize="14" Text=" SELECT * FROM c " IsReadOnly="True" VerticalAlignment="Center"/>
-                    <TextBox x:Name="FilterTextBox" Width="1310" Height="30" FontSize="14"/>
+                    <TextBox Width="175" Height="30" FontSize="14" Text=" SELECT * FROM c WHERE " IsReadOnly="True" VerticalContentAlignment="Center"/>
+                    <TextBox x:Name="FilterTextBox" Width="1275" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
                     <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="14"/>
                 </StackPanel>
 

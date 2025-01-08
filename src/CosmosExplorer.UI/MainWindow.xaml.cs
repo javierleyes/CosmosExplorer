@@ -1,6 +1,8 @@
 ﻿using CosmosExplorer.UI.Common;
 using CosmosExplorer.UI.Modal;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -25,6 +27,78 @@ namespace CosmosExplorer.UI
 
             SharedProperties.ItemListViewCollection = new ItemListViewCollection();
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
+
+            LoadSavedConnectionsFromFile();
+
+            PopulateSavedConnectionsMenu();
+        }
+
+        private void LoadSavedConnectionsFromFile()
+        {
+            string exeDirectory = AppContext.BaseDirectory;
+            string filePath = Path.Combine(exeDirectory, "savedConnections.json");
+
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, "{}");
+                return;
+            }
+
+            try
+            {
+                string jsonContent = File.ReadAllText(filePath);
+                Dictionary<string, string> savedConnections = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
+
+                if (savedConnections is null)
+                {
+                    return;
+                }
+                
+                SharedProperties.SavedConnections = savedConnections;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load saved connections: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void PopulateSavedConnectionsMenu()
+        {
+            if (SharedProperties.SavedConnections.Keys.Count == 0)
+            {
+                return;
+            }
+
+            SavedConnectionMenuItem.IsEnabled = true;
+
+            foreach (string connectionName in SharedProperties.SavedConnections.Keys)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Header = connectionName;
+                menuItem.Click += ConnectionMenuItem_Click;
+                SavedConnectionMenuItem.Items.Add(menuItem);
+            }
+        }
+
+        private async void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
+            MainPanel.Visibility = Visibility.Collapsed;
+
+            if (!SharedProperties.SavedConnections.TryGetValue((sender as MenuItem)?.Header.ToString(), out string connectionString))
+            {
+                MessageBox.Show("The saved connection value is invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            CosmosExplorerHelper.Initialize(connectionString);
+
+            await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
+
+            MainPanel.Visibility = Visibility.Visible;
+            SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
+            LeftPanel.IsEnabled = true;
+
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
@@ -140,6 +214,7 @@ namespace CosmosExplorer.UI
 
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Check this line. filter with a row selected.
             DisplayJson(string.Empty);
 
             bool result = await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);

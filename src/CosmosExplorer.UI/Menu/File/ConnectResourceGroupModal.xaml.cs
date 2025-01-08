@@ -1,4 +1,6 @@
 ﻿using CosmosExplorer.UI.Common;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 
 namespace CosmosExplorer.UI
@@ -18,30 +20,72 @@ namespace CosmosExplorer.UI
             try
             {
                 string connectionString = ConnectionStringTextBox.Text;
-                CosmosExplorerHelper.Initialize(connectionString);
+
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    MessageBox.Show("The connection string can not be empty", "Save connection string", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                this.Close();
 
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
-                ConnectionStringPanel.Visibility = Visibility.Collapsed;
-                Loader.Visibility = Visibility.Visible;
 
                 // Get the MainWindow instance
-                if (Application.Current.MainWindow is MainWindow mainWindow)
+                if (Application.Current.MainWindow is MainWindow mainWindowInstance1)
                 {
-                    mainWindow.LeftPanel.IsEnabled = true;
+                    mainWindowInstance1.MainPanel.Visibility = Visibility.Collapsed;
                 }
+
+                CosmosExplorerHelper.Initialize(connectionString);
 
                 await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
 
-                // Close the modal
-                this.Close();
+                // Get the MainWindow instance
+                if (Application.Current.MainWindow is MainWindow mainWindowInstance2)
+                {
+                    mainWindowInstance2.MainPanel.Visibility = Visibility.Visible;
+                    mainWindowInstance2.LeftPanel.IsEnabled = true;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("An error occurred while connecting to the resource group. Please check your connection details and try again.", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
+            }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            string connectionString = ConnectionStringTextBox.Text;
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                MessageBox.Show("The connection string can not be empty", "Save connection string", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            SaveConnectionStringModal modal = new SaveConnectionStringModal();
+
+            if (modal.ShowDialog() is true)
+            {
+                SharedProperties.SavedConnections.Add(modal.ConnectionStringNameTextBox.Text, connectionString);
+
+                // TODO: Save the file's name in the app settings.
+                string exeDirectory = AppContext.BaseDirectory;
+                string filePath = Path.Combine(exeDirectory, "savedConnections.json");
+
+                if (!File.Exists(filePath))
+                {
+                    return;
+                }
+
+                string jsonString = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
+
+                File.WriteAllText(filePath, jsonString);
             }
         }
     }
