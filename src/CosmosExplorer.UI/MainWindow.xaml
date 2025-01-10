@@ -8,9 +8,9 @@
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu VerticalAlignment="Top">
-            <MenuItem Header="File" Click="MenuItem_Click">
+            <MenuItem Header="File">
                 <MenuItem Header="New connection" Click="OpenConnectionModal_Click"/>
-                <MenuItem Name="SavedConnectionMenuItem" Header="Saved connections" IsEnabled="False"/>
+                <MenuItem Header="Saved connections" Name="SavedConnectionMenuItem" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="CloseApplication_Click"/>
             </MenuItem>

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace CosmosExplorer.UI
 {
@@ -60,6 +61,8 @@ namespace CosmosExplorer.UI
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: avoid saving the same connection string multiple times.
+
             string connectionString = ConnectionStringTextBox.Text;
 
             if (string.IsNullOrEmpty(connectionString))
@@ -86,6 +89,38 @@ namespace CosmosExplorer.UI
                 string jsonString = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
 
                 File.WriteAllText(filePath, jsonString);
+
+                if (Application.Current.MainWindow is MainWindow mainWindowInstance)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Header = modal.ConnectionStringNameTextBox.Text;
+                    menuItem.Click += ConnectionMenuItem_Click;
+
+                    mainWindowInstance.SavedConnectionMenuItem.Items.Add(menuItem);
+                }
+            }
+        }
+
+        private async void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current.MainWindow is MainWindow mainWindowInstance)
+            {
+                SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
+                mainWindowInstance.MainPanel.Visibility = Visibility.Collapsed;
+
+                if (!SharedProperties.SavedConnections.TryGetValue((sender as MenuItem)?.Header.ToString(), out string connectionString))
+                {
+                    MessageBox.Show("The saved connection value is invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                CosmosExplorerHelper.Initialize(connectionString);
+
+                await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
+
+                mainWindowInstance.MainPanel.Visibility = Visibility.Visible;
+                SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
+                mainWindowInstance.LeftPanel.IsEnabled = true;
             }
         }
     }
