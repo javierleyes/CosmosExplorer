@@ -29,9 +29,10 @@ namespace CosmosExplorer.UI
             ItemListView.ItemsSource = SharedProperties.ItemListViewCollection;
 
             LoadSavedConnectionsFromFile();
+            PopulateSavedConnectionsMenu();
         }
 
-        private void LoadSavedConnectionsFromFile()
+        private static void LoadSavedConnectionsFromFile()
         {
             string exeDirectory = AppContext.BaseDirectory;
             string filePath = Path.Combine(exeDirectory, "savedConnections.json");
@@ -96,12 +97,6 @@ namespace CosmosExplorer.UI
             MainPanel.Visibility = Visibility.Visible;
             SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
             LeftPanel.IsEnabled = true;
-
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            PopulateSavedConnectionsMenu();
         }
 
         private void OpenConnectionModal_Click(object sender, RoutedEventArgs e)
@@ -217,7 +212,6 @@ namespace CosmosExplorer.UI
 
         private async void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Check this line. filter with a row selected.
             DisplayJson(string.Empty);
 
             bool result = await CosmosExplorerHelper.SearchByQueryAsync(FilterTextBox.Text).ConfigureAwait(true);
