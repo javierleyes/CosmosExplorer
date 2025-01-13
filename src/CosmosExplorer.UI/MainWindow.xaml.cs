@@ -1,4 +1,5 @@
-﻿using CosmosExplorer.UI.Common;
+﻿using CosmosExplorer.Core;
+using CosmosExplorer.UI.Common;
 using CosmosExplorer.UI.Modal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -52,7 +53,12 @@ namespace CosmosExplorer.UI
                 {
                     return;
                 }
-                
+
+                foreach (var key in savedConnections.Keys.ToList())
+                {
+                    savedConnections[key] = Utils.Decrypt(savedConnections[key], SharedProperties.Key, SharedProperties.IV);
+                }
+
                 SharedProperties.SavedConnections = savedConnections;
             }
             catch (Exception ex)
