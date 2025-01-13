@@ -25,5 +25,10 @@
         public static string SelectedItemPartitionKey { get; set; }
 
         public static string? SelectedItemJson { get; set; } = null;
+
+        // TODO: Read from configuration.
+        public static byte[] Key = Convert.FromBase64String("bWluZGVyLXNlY3JldC1rZXktZm9yLWFlcy1lbmNyeXB0aW9u");
+
+        public static byte[] IV = Convert.FromBase64String("bWluZGVyLXNlY3JldC1pdi1mb3ItYWVz");
     }
 }

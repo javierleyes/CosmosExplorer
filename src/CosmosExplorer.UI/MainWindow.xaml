@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CosmosExplorer.UI"
         xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CosmosExplorer.UI.MainWindow"
-        Title="Cosmos Explorer (Preview 3)" Height="1000" Width="1900"
+        Title="Cosmos Explorer (Preview 4)" Height="1000" Width="1900"
         Icon="/Icons/orbit.ico"
         WindowStartupLocation="CenterScreen">
     <Grid>

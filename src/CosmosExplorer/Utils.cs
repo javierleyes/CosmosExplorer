@@ -39,5 +39,51 @@ namespace CosmosExplorer.Core
                 return builder.ToString();
             }
         }
+
+        /// <summary>
+        /// Encrypts the specified text using AES encryption.
+        /// </summary>
+        /// <param name="input">The input to encrypt.</param>
+        /// <param name="key">The encryption key.</param>
+        /// <param name="iv">The initialization vector.</param>
+        /// <returns>The encrypted text as a base64 encoded string.</returns>
+        public static string Encrypt(string input, byte[] key, byte[] iv)
+        {
+            using Aes aes = Aes.Create();
+            aes.Key = key.Take(32).ToArray();
+            aes.IV = iv.Take(16).ToArray();
+
+            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+            using MemoryStream ms = new MemoryStream();
+            using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+            {
+                using StreamWriter sw = new StreamWriter(cs);
+                sw.Write(input);
+            }
+
+            return Convert.ToBase64String(ms.ToArray());
+        }
+
+        /// <summary>
+        /// Decrypts the specified encrypted text using AES decryption.
+        /// </summary>
+        /// <param name="encryptedInput">The encrypted input as a base64 encoded string.</param>
+        /// <param name="key">The decryption key.</param>
+        /// <param name="iv">The initialization vector.</param>
+        /// <returns>The decrypted text.</returns>
+        public static string Decrypt(string encryptedInput, byte[] key, byte[] iv)
+        {
+            using Aes aes = Aes.Create();
+            aes.Key = key.Take(32).ToArray();
+            aes.IV = iv.Take(16).ToArray();
+
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+            using MemoryStream ms = new MemoryStream(Convert.FromBase64String(encryptedInput));
+            using CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+            using StreamReader sr = new StreamReader(cs);
+            return sr.ReadToEnd();
+        }
     }
 }

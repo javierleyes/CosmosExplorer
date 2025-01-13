@@ -1,4 +1,5 @@
-﻿using CosmosExplorer.UI.Common;
+﻿using CosmosExplorer.Core;
+using CosmosExplorer.UI.Common;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -75,16 +76,11 @@ namespace CosmosExplorer.UI
 
             if (modal.ShowDialog() is true)
             {
-                SharedProperties.SavedConnections.Add(modal.ConnectionStringNameTextBox.Text, connectionString);
+                string encryptedConnectionString = Utils.Encrypt(connectionString, SharedProperties.Key, SharedProperties.IV);
+                SharedProperties.SavedConnections.Add(modal.ConnectionStringNameTextBox.Text, encryptedConnectionString);
 
-                // TODO: Save the file's name in the app settings.
                 string exeDirectory = AppContext.BaseDirectory;
                 string filePath = Path.Combine(exeDirectory, "savedConnections.json");
-
-                if (!File.Exists(filePath))
-                {
-                    return;
-                }
 
                 string jsonString = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
 
