@@ -62,8 +62,6 @@ namespace CosmosExplorer.UI
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: avoid saving the same connection string multiple times.
-
             string connectionString = ConnectionStringTextBox.Text;
 
             if (string.IsNullOrEmpty(connectionString))
@@ -76,23 +74,34 @@ namespace CosmosExplorer.UI
 
             if (modal.ShowDialog() is true)
             {
-                string encryptedConnectionString = Utils.Encrypt(connectionString, SharedProperties.Key, SharedProperties.IV);
-                SharedProperties.SavedConnections.Add(modal.ConnectionStringNameTextBox.Text, encryptedConnectionString);
+                string connectionStringName = modal.ConnectionStringNameTextBox.Text;
+
+                // Check if the key already exists
+                if (SharedProperties.SavedConnections.ContainsKey(connectionStringName))
+                {
+                    MessageBox.Show("This connection string is already saved.", "Save connection string", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                SharedProperties.SavedConnections.Add(connectionStringName, connectionString);
 
                 string exeDirectory = AppContext.BaseDirectory;
                 string filePath = Path.Combine(exeDirectory, "savedConnections.json");
 
-                string jsonString = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
+                string savedConnections = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
 
-                File.WriteAllText(filePath, jsonString);
+                string encryptedSavedConnections = Utils.Encrypt(savedConnections, SharedProperties.Key, SharedProperties.IV);
+
+                File.WriteAllText(filePath, encryptedSavedConnections);
 
                 if (Application.Current.MainWindow is MainWindow mainWindowInstance)
                 {
                     MenuItem menuItem = new MenuItem();
-                    menuItem.Header = modal.ConnectionStringNameTextBox.Text;
+                    menuItem.Header = connectionStringName;
                     menuItem.Click += ConnectionMenuItem_Click;
 
                     mainWindowInstance.SavedConnectionMenuItem.Items.Add(menuItem);
+                    mainWindowInstance.SavedConnectionMenuItem.IsEnabled = true;
                 }
             }
         }

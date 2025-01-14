@@ -46,17 +46,14 @@ namespace CosmosExplorer.UI
 
             try
             {
-                string jsonContent = File.ReadAllText(filePath);
-                Dictionary<string, string> savedConnections = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
+                string encryptedContent = File.ReadAllText(filePath);
+                string decryptedContent = Utils.Decrypt(encryptedContent, SharedProperties.Key, SharedProperties.IV);
+
+                Dictionary<string, string> savedConnections = JsonConvert.DeserializeObject<Dictionary<string, string>>(decryptedContent);
 
                 if (savedConnections is null)
                 {
                     return;
-                }
-
-                foreach (var key in savedConnections.Keys.ToList())
-                {
-                    savedConnections[key] = Utils.Decrypt(savedConnections[key], SharedProperties.Key, SharedProperties.IV);
                 }
 
                 SharedProperties.SavedConnections = savedConnections;
