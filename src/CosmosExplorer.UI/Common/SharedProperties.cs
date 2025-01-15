@@ -1,7 +1,15 @@
-﻿namespace CosmosExplorer.UI.Common
+﻿using System.Configuration;
+
+namespace CosmosExplorer.UI.Common
 {
     public static class SharedProperties
     {
+        static SharedProperties()
+        {
+            Key = Convert.FromBase64String(ConfigurationManager.AppSettings["EncryptionKey"]);
+            IV = Convert.FromBase64String(ConfigurationManager.AppSettings["EncryptionIV"]);
+        }
+
         public static Dictionary<string, string> SavedConnections { get; set; } = new Dictionary<string, string>();
 
         public static DatabaseTreeCollection DatabaseCollection { get; set; }
@@ -26,9 +34,8 @@
 
         public static string? SelectedItemJson { get; set; } = null;
 
-        // TODO: Read from configuration.
-        public static byte[] Key = Convert.FromBase64String("bWluZGVyLXNlY3JldC1rZXktZm9yLWFlcy1lbmNyeXB0aW9u");
+        public static byte[] Key { get; private set; }
 
-        public static byte[] IV = Convert.FromBase64String("bWluZGVyLXNlY3JldC1pdi1mb3ItYWVz");
+        public static byte[] IV { get; private set; }
     }
 }
