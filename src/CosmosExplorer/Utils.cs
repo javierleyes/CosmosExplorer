@@ -50,8 +50,8 @@ namespace CosmosExplorer.Core
         public static string Encrypt(string input, byte[] key, byte[] iv)
         {
             using Aes aes = Aes.Create();
-            aes.Key = key.Take(32).ToArray();
-            aes.IV = iv.Take(16).ToArray();
+            aes.Key = key;
+            aes.IV = iv;
 
             ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
@@ -75,8 +75,8 @@ namespace CosmosExplorer.Core
         public static string Decrypt(string encryptedInput, byte[] key, byte[] iv)
         {
             using Aes aes = Aes.Create();
-            aes.Key = key.Take(32).ToArray();
-            aes.IV = iv.Take(16).ToArray();
+            aes.Key = key;
+            aes.IV = iv;
 
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
@@ -84,6 +84,22 @@ namespace CosmosExplorer.Core
             using CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
             using StreamReader sr = new StreamReader(cs);
             return sr.ReadToEnd();
+        }
+
+        /// <summary>
+        /// Generates a random base64 encoded string of the specified byte length.
+        /// </summary>
+        /// <param name="byteLength">The length of the byte array to generate.</param>
+        /// <returns>A base64 encoded string representing the random byte array.</returns>
+        public static string GenerateRandomBase64String(int byteLength)
+        {
+            byte[] randomBytes = new byte[byteLength];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+
+            return Convert.ToBase64String(randomBytes);
         }
     }
 }
