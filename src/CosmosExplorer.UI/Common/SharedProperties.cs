@@ -8,6 +8,8 @@ namespace CosmosExplorer.UI.Common
         {
             Key = Convert.FromBase64String(ConfigurationManager.AppSettings["EncryptionKey"]);
             IV = Convert.FromBase64String(ConfigurationManager.AppSettings["EncryptionIV"]);
+
+            UserSettingsFileName = ConfigurationManager.AppSettings["UserSettingsFile"] ?? "UserSettings.config";
         }
 
         public static Dictionary<string, string> SavedConnections { get; set; } = new Dictionary<string, string>();
@@ -37,5 +39,7 @@ namespace CosmosExplorer.UI.Common
         public static byte[] Key { get; private set; }
 
         public static byte[] IV { get; private set; }
+
+        public static string UserSettingsFileName { get; private set; }
     }
 }

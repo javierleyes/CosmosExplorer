@@ -86,7 +86,7 @@ namespace CosmosExplorer.UI
                 SharedProperties.SavedConnections.Add(connectionStringName, connectionString);
 
                 string exeDirectory = AppContext.BaseDirectory;
-                string filePath = Path.Combine(exeDirectory, "savedConnections.json");
+                string filePath = Path.Combine(exeDirectory, SharedProperties.UserSettingsFileName);
 
                 string savedConnections = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
 
