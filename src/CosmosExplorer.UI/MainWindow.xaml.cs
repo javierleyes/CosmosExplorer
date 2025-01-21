@@ -36,7 +36,7 @@ namespace CosmosExplorer.UI
         private static void LoadSavedConnectionsFromFile()
         {
             string exeDirectory = AppContext.BaseDirectory;
-            string filePath = Path.Combine(exeDirectory, "savedConnections.json");
+            string filePath = Path.Combine(exeDirectory, SharedProperties.UserSettingsFileName);
 
             if (!File.Exists(filePath))
             {
