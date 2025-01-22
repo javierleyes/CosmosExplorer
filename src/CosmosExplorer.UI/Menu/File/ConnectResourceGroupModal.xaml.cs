@@ -85,14 +85,13 @@ namespace CosmosExplorer.UI
 
                 SharedProperties.SavedConnections.Add(connectionStringName, connectionString);
 
-                string exeDirectory = AppContext.BaseDirectory;
-                string filePath = Path.Combine(exeDirectory, SharedProperties.UserSettingsFileName);
+                string userSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CosmosExplorer", SharedProperties.UserSettingsFileName);
 
                 string savedConnections = JsonSerializer.Serialize(SharedProperties.SavedConnections, new JsonSerializerOptions { WriteIndented = true });
 
                 string encryptedSavedConnections = Utils.Encrypt(savedConnections, SharedProperties.Key, SharedProperties.IV);
 
-                File.WriteAllText(filePath, encryptedSavedConnections);
+                File.WriteAllText(userSettingsPath, encryptedSavedConnections);
 
                 if (Application.Current.MainWindow is MainWindow mainWindowInstance)
                 {

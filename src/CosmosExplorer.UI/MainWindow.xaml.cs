@@ -35,18 +35,25 @@ namespace CosmosExplorer.UI
 
         private static void LoadSavedConnectionsFromFile()
         {
-            string exeDirectory = AppContext.BaseDirectory;
-            string filePath = Path.Combine(exeDirectory, SharedProperties.UserSettingsFileName);
+            string userSettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CosmosExplorer", SharedProperties.UserSettingsFileName);
 
-            if (!File.Exists(filePath))
+            // Ensure the directory exists.
+            string directoryPath = Path.GetDirectoryName(userSettingsPath);
+            if (!Directory.Exists(directoryPath))
             {
-                File.WriteAllText(filePath, "{}");
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            // Ensure the file exists.
+            if (!File.Exists(userSettingsPath))
+            {
+                File.WriteAllText(userSettingsPath, "");
                 return;
             }
 
             try
             {
-                string encryptedContent = File.ReadAllText(filePath);
+                string encryptedContent = File.ReadAllText(userSettingsPath);
                 string decryptedContent = Utils.Decrypt(encryptedContent, SharedProperties.Key, SharedProperties.IV);
 
                 Dictionary<string, string> savedConnections = JsonConvert.DeserializeObject<Dictionary<string, string>>(decryptedContent);
