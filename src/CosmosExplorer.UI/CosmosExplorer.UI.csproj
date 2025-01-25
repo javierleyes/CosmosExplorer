@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\orbit.ico" />
+    <Resource Include="Icons\Cosmos-DB.ico" />
     <Resource Include="Images\OrangeCatDeveloping.png" />
   </ItemGroup>
 

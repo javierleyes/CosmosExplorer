@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:CosmosExplorer.UI"
         xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CosmosExplorer.UI.MainWindow"
         Title="Cosmos Explorer" Height="1000" Width="1900"
-        Icon="/Icons/orbit.ico"
+        Icon="/icons/Cosmos-DB.ico"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu VerticalAlignment="Top">
@@ -28,7 +28,7 @@
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:DatabaseTreeSource}" ItemsSource="{Binding Containers}">
                             <StackPanel Orientation="Horizontal" Margin="0,0,8,8">
-                                <Image Source="/Icons/orbit.ico" Width="16" Height="16" />
+                                <Image Source="/icons/Cosmos-DB.ico" Width="16" Height="16" />
                                 <TextBlock Text="{Binding Name}" Margin="7,0,0,0" FontSize="14" />
                             </StackPanel>
                             <HierarchicalDataTemplate.ItemTemplate>
