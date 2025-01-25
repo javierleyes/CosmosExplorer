@@ -109,6 +109,8 @@ namespace CosmosExplorer.UI
         {
             if (Application.Current.MainWindow is MainWindow mainWindowInstance)
             {
+                mainWindowInstance.Title = "Cosmos Explorer";
+
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
                 mainWindowInstance.MainPanel.Visibility = Visibility.Collapsed;
 
@@ -122,6 +124,7 @@ namespace CosmosExplorer.UI
 
                 await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
 
+                mainWindowInstance.Title = $"{mainWindowInstance.Title} - {(e.Source as MenuItem)?.Header}";
                 mainWindowInstance.MainPanel.Visibility = Visibility.Visible;
                 SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
                 mainWindowInstance.LeftPanel.IsEnabled = true;

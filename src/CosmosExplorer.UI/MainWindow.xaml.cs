@@ -93,6 +93,7 @@ namespace CosmosExplorer.UI
         {
             SharedProperties.LoaderIndicator.SetLoaderIndicator(true);
             MainPanel.Visibility = Visibility.Collapsed;
+            this.Title = "Cosmos Explorer";
 
             if (!SharedProperties.SavedConnections.TryGetValue((sender as MenuItem)?.Header.ToString(), out string connectionString))
             {
@@ -104,6 +105,7 @@ namespace CosmosExplorer.UI
 
             await CosmosExplorerHelper.LoadDatabasesAsync().ConfigureAwait(true);
 
+            this.Title = $"{this.Title} - {(e.Source as MenuItem)?.Header}";
             MainPanel.Visibility = Visibility.Visible;
             SharedProperties.LoaderIndicator.SetLoaderIndicator(false);
             LeftPanel.IsEnabled = true;
@@ -528,28 +530,35 @@ namespace CosmosExplorer.UI
             ItemDescriptionRichTextBox.Document.Blocks.Add(paragraph);
         }
 
-        private void AddJsonToken(Paragraph paragraph, JToken token, int indentLevel, bool isLast = false)
+        private static void AddJsonToken(Paragraph paragraph, JToken token, int indentLevel, bool isLast = false, bool isParentAnObject = false)
         {
             string indent = new string(' ', indentLevel * 4);
 
             if (token is JProperty property)
             {
                 paragraph.Inlines.Add(new Run($"{indent}\"{property.Name}\":") { Foreground = Brushes.Maroon });
-                AddJsonToken(paragraph, property.Value, indentLevel, isLast);
+                AddJsonToken(paragraph, property.Value, indentLevel, isLast, isParentAnObject);
             }
             else if (token is JObject obj)
             {
-                paragraph.Inlines.Add(new Run($"{indent}{{\n"));
+                if (isParentAnObject)
+                {
+                    paragraph.Inlines.Add(new Run($" {{\n"));
+                }
+                else
+                {
+                    paragraph.Inlines.Add(new Run($"{indent}{{\n"));
+                }
                 var children = obj.Children().ToList();
                 for (int i = 0; i < children.Count; i++)
                 {
-                    AddJsonToken(paragraph, children[i], indentLevel + 1, i == children.Count - 1);
+                    AddJsonToken(paragraph, children[i], indentLevel + 1, i == children.Count - 1, true);
                 }
                 paragraph.Inlines.Add(new Run($"{indent}}}{(isLast ? "" : ",")}\n"));
             }
             else if (token is JArray array)
             {
-                paragraph.Inlines.Add(new Run($"{indent}[\n"));
+                paragraph.Inlines.Add(new Run($" [\n"));
                 for (int i = 0; i < array.Count(); i++)
                 {
                     AddJsonToken(paragraph, array[i], indentLevel + 2, i == array.Count() - 1);
@@ -585,7 +594,7 @@ namespace CosmosExplorer.UI
             }
             else
             {
-                paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
+                paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.DarkGreen });
                 paragraph.Inlines.Add(new Run("\n"));
             }
         }
