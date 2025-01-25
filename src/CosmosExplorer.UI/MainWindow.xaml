@@ -3,13 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CosmosExplorer.UI"
         xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CosmosExplorer.UI.MainWindow"
-        Title="Cosmos Explorer (Preview 5)" Height="1000" Width="1900"
+        Title="Cosmos Explorer" Height="1000" Width="1900"
         Icon="/Icons/orbit.ico"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
-                <MenuItem Header="New connection" Click="OpenConnectionModal_Click"/>
+                <MenuItem Header="Connect" Click="OpenConnectionModal_Click"/>
                 <MenuItem Header="Saved connections" Name="SavedConnectionMenuItem" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="CloseApplication_Click"/>
