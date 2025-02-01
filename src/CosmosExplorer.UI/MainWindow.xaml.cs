@@ -79,6 +79,7 @@ namespace CosmosExplorer.UI
             }
 
             SavedConnectionMenuItem.IsEnabled = true;
+            ManageConnectionsMenuItem.IsEnabled = true;
 
             foreach (string connectionName in SharedProperties.SavedConnections.Keys)
             {
@@ -87,6 +88,13 @@ namespace CosmosExplorer.UI
                 menuItem.Click += ConnectionMenuItem_Click;
                 SavedConnectionMenuItem.Items.Add(menuItem);
             }
+        }
+
+        private async void ManageConnections_Click(object sender, RoutedEventArgs e)
+        {
+            ManageConnectionsModal modal = new ManageConnectionsModal();
+            modal.Owner = this;
+            modal.ShowDialog();
         }
 
         private async void ConnectionMenuItem_Click(object sender, RoutedEventArgs e)
