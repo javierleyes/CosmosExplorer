@@ -101,6 +101,7 @@ namespace CosmosExplorer.UI
 
                     mainWindowInstance.SavedConnectionMenuItem.Items.Add(menuItem);
                     mainWindowInstance.SavedConnectionMenuItem.IsEnabled = true;
+                    mainWindowInstance.ManageConnectionsMenuItem.IsEnabled = true;
                 }
             }
         }
