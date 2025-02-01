@@ -11,6 +11,7 @@
             <MenuItem Header="File">
                 <MenuItem Header="Connect" Click="OpenConnectionModal_Click"/>
                 <MenuItem Header="Saved connections" Name="SavedConnectionMenuItem" IsEnabled="False"/>
+                <MenuItem Header="Manage connections" Name="ManageConnectionsMenuItem" Click="ManageConnections_Click" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="CloseApplication_Click"/>
             </MenuItem>
