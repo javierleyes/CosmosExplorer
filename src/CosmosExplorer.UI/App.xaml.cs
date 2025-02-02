@@ -1,6 +1,6 @@
 ﻿using CosmosExplorer.Core;
 using System.Configuration;
-using System.Security.Cryptography;
+using System.IO;
 using System.Windows;
 using System.Xml.Linq;
 
@@ -23,21 +23,38 @@ namespace CosmosExplorer.UI
 
         private void UpdateEncryptionKeysInConfig()
         {
-            string configFilePath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
-            XDocument config = XDocument.Load(configFilePath);
+            string cosmosExplorerConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CosmosExplorer", ConfigurationManager.AppSettings["CosmosExplorerConfig"] ?? "CosmosExplorer.config");
+            Directory.CreateDirectory(Path.GetDirectoryName(cosmosExplorerConfigFilePath));
+
+            XDocument config;
+            if (File.Exists(cosmosExplorerConfigFilePath))
+            {
+                config = XDocument.Load(cosmosExplorerConfigFilePath);
+            }
+            else
+            {
+                config = new XDocument(new XElement("configuration", new XElement("appSettings")));
+            }
 
             var appSettings = config.Element("configuration")?.Element("appSettings");
             if (appSettings == null)
             {
-                throw new Exception("App.config is missing the appSettings section.");
+                throw new Exception("UserConfig.config is missing the appSettings section.");
             }
 
             var encryptionKeyElement = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "EncryptionKey");
             var encryptionIVElement = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "EncryptionIV");
 
-            if (encryptionKeyElement == null || encryptionIVElement == null)
+            if (encryptionKeyElement == null)
             {
-                throw new Exception("App.config is missing the EncryptionKey or EncryptionIV settings.");
+                encryptionKeyElement = new XElement("add", new XAttribute("key", "EncryptionKey"));
+                appSettings.Add(encryptionKeyElement);
+            }
+
+            if (encryptionIVElement == null)
+            {
+                encryptionIVElement = new XElement("add", new XAttribute("key", "EncryptionIV"));
+                appSettings.Add(encryptionIVElement);
             }
 
             if (string.IsNullOrEmpty(encryptionKeyElement.Attribute("value")?.Value))
@@ -50,7 +67,7 @@ namespace CosmosExplorer.UI
                 encryptionIVElement.SetAttributeValue("value", Utils.GenerateRandomBase64String(16)); // 128 bits IV (16 bytes)
             }
 
-            config.Save(configFilePath);
+            config.Save(cosmosExplorerConfigFilePath);
         }
     }
 }
