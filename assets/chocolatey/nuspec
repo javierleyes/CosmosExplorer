@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>cosmosexplorer</id>
+    <version>1.0.0</version>
+    <owners>Javier Leyes</owners>
+    <title>Cosmos Explorer</title>
+    <authors>Javier Leyes</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/javierleyes/CosmosExplorer/blob/main/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/javierleyes/CosmosExplorer</projectUrl>
+    <iconUrl>https://github.com/javierleyes/CosmosExplorer/blob/main/assets/images/Cosmos%20explorer.svg</iconUrl>
+    <packageSourceUrl>https://github.com/javierleyes/CosmosExplorer</packageSourceUrl>
+    <copyright>Copyright 2024 Javier Leyes</copyright>
+    <docsUrl>https://github.com/javierleyes/CosmosExplorer/tree/main/docs</docsUrl>
+    <bugTrackerUrl>https://github.com/javierleyes/CosmosExplorer/issues</bugTrackerUrl>
+    <tags>cosmosexplorer azure cosmos nosql</tags>
+    <summary>Cosmos Explorer allows users to manage data like Azure Portal</summary>
+    <description>Cosmos Explorer allows users to manage data like Azure Portal</description>
+    <releaseNotes>https://github.com/javierleyes/CosmosExplorer/blob/main/docs/release%20notes.md</releaseNotes>
+  </metadata>
+    <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
