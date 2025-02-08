@@ -1,7 +1,8 @@
 ﻿<Window x:Class="CosmosExplorer.UI.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About Cosmos Explorer" Height="500" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="About Cosmos Explorer" Height="500" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        FontFamily="Segoe UI" FontSize="14">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/OrangeCatDeveloping.png" />

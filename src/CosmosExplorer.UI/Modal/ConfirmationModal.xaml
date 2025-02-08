@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CosmosExplorer.UI.Modal"
         mc:Ignorable="d"
         Title="Confirm delete" Height="150" Width="700"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" FontFamily="Segoe UI" FontSize="14">
     <Grid>
         <TextBlock Text="Are you sure you want to delete the selected item?" 
                    HorizontalAlignment="Center" VerticalAlignment="Center" 
