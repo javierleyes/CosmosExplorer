@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Manage Connections" WindowStartupLocation="CenterScreen" Height="450" Width="800">
+        Title="Manage Connections" WindowStartupLocation="CenterScreen" Height="450" Width="800" ResizeMode="NoResize">
     <Grid>
         <DataGrid x:Name="ConnectionsDataGrid" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CanUserAddRows="False">
             <DataGrid.Columns>
