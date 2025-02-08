@@ -6,6 +6,36 @@
         Title="Cosmos Explorer" Height="1000" Width="1900"
         Icon="/icons/Cosmos-DB.ico"
         WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="14">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#005A9E"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#003F73"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
@@ -57,7 +87,7 @@
 
                 <StackPanel x:Name="FilterPanel" Orientation="Horizontal" VerticalAlignment="Top" Width="1550" IsEnabled="False">
                     <TextBox Width="175" Height="30" FontSize="14" Text=" SELECT * FROM c WHERE " IsReadOnly="True" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="FilterTextBox" Width="1275" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                    <TextBox x:Name="FilterTextBox" Width="1260" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
                     <Button Content="Apply filter" Width="100" Click="FilterButton_Click" Height="30" FontSize="14"/>
                 </StackPanel>
 
