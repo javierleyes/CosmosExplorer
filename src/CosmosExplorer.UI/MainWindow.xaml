@@ -5,7 +5,7 @@
         xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CosmosExplorer.UI.MainWindow"
         Title="Cosmos Explorer" Height="1000" Width="1900"
         Icon="/icons/Cosmos-DB.ico"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="14">
     <Grid>
         <Menu VerticalAlignment="Top">
             <MenuItem Header="File">
