@@ -1,5 +1,5 @@
 ## How to deploy (Chocolatey)
-1) choco new cosmosexplorer (just the first time)
+1) ```choco new {cosmosexplorer}``` (just the first time)
 move to C:\Windows\System32\{packagename}
 delete TODO, 
 
@@ -40,16 +40,23 @@ Example assets/chocolatey/nuspec
 5) Upload package to GitHub => Releases
 
 6) Adjust chocolateyinstall.ps1 (See assets/chocolatey/chocolateyinstall.ps1) (every time)
-$checksum value, use the command 
+
+Update $checksum value, use the command 
 ```
 Get-FileHash -Path .\CosmosExplorer.zip -Algorithm SHA256
 ```
 
-7) Generate the package (every time) 
+7) Generate the package (every time)
+```
 choco pack
+```
 
-# This is to test the package
+This is to test the package
+```
 choco install cosmosexplorer --debug --verbose --source .
+```
 
 8) Upload package (every time)
+```
 choco push {cosmosexplorer.1.0.0.nupkg} --source https://push.chocolatey.org/
+```
