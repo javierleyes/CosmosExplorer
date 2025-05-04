@@ -9,6 +9,10 @@
     <ApplicationIcon>Icons\Cosmos-DB.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="Icons\Cosmos-DB.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
