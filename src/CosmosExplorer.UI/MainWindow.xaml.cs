@@ -600,6 +600,12 @@ namespace CosmosExplorer.UI
                 paragraph.Inlines.Add(new Run($" \"{utcDate}\"{(isLast ? "" : ",")}") { Foreground = Brushes.Navy });
                 paragraph.Inlines.Add(new Run("\n"));
             }
+            else if (token.Type == JTokenType.Boolean)
+            {
+                // Display boolean values as true/false in dark red
+                paragraph.Inlines.Add(new Run($" {token.ToString().ToLower()}{(isLast ? "" : ",")}") { Foreground = Brushes.DarkRed });
+                paragraph.Inlines.Add(new Run("\n"));
+            }
             else
             {
                 paragraph.Inlines.Add(new Run($" {token.ToString()}{(isLast ? "" : ",")}") { Foreground = Brushes.DarkGreen });
